@@ -2,7 +2,8 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.5.7`, `latest` (*1.5.7/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.7)
+- [`1.5.8`, `latest` (*1.5.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.8)
+- [`1.5.7`, (*1.5.7/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.7)
 
 
 ## What is Unbound?
