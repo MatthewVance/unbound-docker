@@ -71,7 +71,7 @@ $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 
 # Supported Docker versions
 
-This image is tested on Docker version 1.9.1.
+This image is tested on Docker version 1.11.2.
 
 Use on older versions at your own risk.
 
