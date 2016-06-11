@@ -1,10 +1,12 @@
 #! /bin/sh
 
 reserved=12582912
-availableMemory=$((1024 * $(fgrep MemAvailable /proc/meminfo | sed 's/[^0-9]//g') - $reserved))
-if [ $availableMemory -le 0 ]; then
+availableMemory=$((1024 * $( (fgrep MemAvailable /proc/meminfo || fgrep MemTotal /proc/meminfo) | sed 's/[^0-9]//g' ) ))
+if [ $availableMemory -le $(($reserved * 2)) ]; then
+    echo "Not enough memory" >&2
     exit 1
 fi
+availableMemory=$(($availableMemory - $reserved))
 msg_cache_size=$(($availableMemory / 3))
 rr_cache_size=$(($availableMemory / 3))
 nproc=$(nproc)
