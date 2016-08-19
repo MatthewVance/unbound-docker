@@ -1,4 +1,4 @@
-FROM mvance/debian:jessie-minbase
+FROM debian:jessie
 MAINTAINER Matthew Vance
 
 RUN set -x && \
