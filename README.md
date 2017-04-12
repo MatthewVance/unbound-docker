@@ -5,10 +5,6 @@
 - [`1.6.1`, `latest` (*1.6.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.1)
 - [`1.6.0`, (*1.6.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.0)
 - [`1.5.10`, (*1.5.10/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.10)
-- [`1.5.9`, (*1.5.9/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.9)
-- [`1.5.8`, (*1.5.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.8)
-- [`1.5.7`, (*1.5.7/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.7)
-
 
 ## What is Unbound?
 
