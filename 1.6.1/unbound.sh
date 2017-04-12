@@ -56,6 +56,7 @@ server:
   msg-cache-size: @MSG_CACHE_SIZE@
   rrset-cache-size: @RR_CACHE_SIZE@
   neg-cache-size: 4M
+  serve-expired: yes
   access-control: 127.0.0.1/32 allow
   access-control: 192.168.1.1/24 allow
   access-control: 172.16.0.0/12 allow
