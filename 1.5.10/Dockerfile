@@ -9,9 +9,9 @@ RUN set -x && \
 
 ENV LIBRESSL_VERSION 2.5.4
 ENV LIBRESSL_SHA256 107a5b522fbb8318d4c3be668075e5e607296f0a9255d71674caa94571336efa
-ENV LIBRESSL_DOWNLOAD_URL http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.4.tar.gz
+ENV LIBRESSL_DOWNLOAD_URL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.4.tar.gz
 
-RUN BUILD_DEPS='curl gcc libc-dev make' && \
+RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $BUILD_DEPS && \
@@ -32,9 +32,9 @@ RUN BUILD_DEPS='curl gcc libc-dev make' && \
 
 ENV UNBOUND_VERSION 1.5.10
 ENV UNBOUND_SHA256 a39b8b4fcca2a2b35a2daa53fe35150cc3f09038dc9acede09c912fc248a9486
-ENV UNBOUND_DOWNLOAD_URL http://www.unbound.net/downloads/unbound-1.5.10.tar.gz
+ENV UNBOUND_DOWNLOAD_URL https://www.unbound.net/downloads/unbound-1.5.10.tar.gz
 
-RUN BUILD_DEPS='curl gcc libc-dev make' && \
+RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $BUILD_DEPS \
