@@ -75,12 +75,6 @@ $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 --restart=always mvance/unbound:latest
 ```
 
-# Supported Docker versions
-
-This image is tested on Docker version 1.11.2.
-
-Use on older versions at your own risk.
-
 # User feedback
 
 ## Documentation
@@ -93,6 +87,7 @@ Documentation for Unbound is available on the [project's website](https://unboun
 
 If you have any problems with or questions about this image, please contact me
 through a [GitHub issue](https://github.com/MatthewVance/unbound-docker/issues).
+
 ## Contributing
 
 You are invited to contribute new features, fixes, or updates, large or small. I
@@ -108,27 +103,30 @@ issue](https://github.com/MatthewVance/unbound-docker/issues), especially for
 more ambitious contributions. This gives other contributors a chance to point
 you in the right direction, give you feedback on your design, and help you find
 out if someone else is working on the same thing.
+
 ## Acknowledgments
 
 The code in this image is heavily influenced by DNSCrypt server Docker image,
 though the upstream projects most certainly also deserve credit for making this
 all possible.
-- [DNSCrypt server Docker image](https://github.com/jedisct1/dnscrypt-server-docker)
 - [Docker](https://www.docker.com/)
+- [DNSCrypt server Docker image](https://github.com/jedisct1/dnscrypt-server-docker)
 - [LibreSSL](http://www.libressl.org/)
 - [Unbound](https://unbound.nlnetlabs.nl/)
 
 ## Licenses
+
 ### License
 
 Unless otherwise specified, all code is released under the MIT License (MIT).
 See the [repository's `LICENSE`
 file](https://github.com/MatthewVance/unbound-docker/blob/master/LICENSE) for
 details.
+
 ### Licenses for other components
 
-- DNSCrypt server Docker image: [ISC License](https://github.com/jedisct1/dnscrypt-server-docker/blob/master/LICENSE)
 - Docker: [Apache 2.0](https://github.com/docker/docker/blob/master/LICENSE)
-- Unbound: [BSD License](https://unbound.nlnetlabs.nl/svn/trunk/LICENSE)
+- DNSCrypt server Docker image: [ISC License](https://github.com/jedisct1/dnscrypt-server-docker/blob/master/LICENSE)
 - LibreSSL: [Various](http://cvsweb.openbsd.org/cgi-bin/cvsweb/src/lib/libssl/src/LICENSE?rev=1.12&content-type=text/x-cvsweb-markup)
-
+- OpenSSL: [Apache-style license](https://www.openssl.org/source/license.html)
+- Unbound: [BSD License](https://unbound.nlnetlabs.nl/svn/trunk/LICENSE)
