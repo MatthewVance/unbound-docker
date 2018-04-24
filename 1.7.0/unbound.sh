@@ -26,7 +26,7 @@ server:
   num-threads: @THREADS@
   interface: 0.0.0.0@53
   so-reuseport: yes
-  edns-buffer-size: 1252
+  edns-buffer-size: 1472
   delay-close: 10000
   cache-min-ttl: 60
   cache-max-ttl: 86400
@@ -34,7 +34,9 @@ server:
   username: "_unbound"
   log-queries: no
   hide-version: yes
-  identity: "MyUnbound"
+  hide-identity: yes
+  identity: "DNS"
+  harden-algo-downgrade: yes
   harden-short-bufsize: yes
   harden-large-queries: yes
   harden-glue: yes
@@ -57,6 +59,14 @@ server:
   rrset-cache-size: @RR_CACHE_SIZE@
   neg-cache-size: 4M
   serve-expired: yes
+  use-caps-for-id: yes
+  private-address: 10.0.0.0/8
+  private-address: 172.16.0.0/12
+  private-address: 192.168.0.0/16
+  private-address: 169.254.0.0/16
+  private-address: fd00::/8
+  private-address: fe80::/10
+  private-address: ::ffff:0:0/96
   access-control: 127.0.0.1/32 allow
   access-control: 192.168.1.1/24 allow
   access-control: 172.16.0.0/12 allow
@@ -64,8 +74,15 @@ server:
   include: /opt/unbound/etc/unbound/a-records.conf
   forward-zone:
     name: "."
-    forward-addr: 8.8.8.8
-    forward-addr: 8.8.4.4
+    forward-addr: 1.1.1.1@853
+    forward-addr: 1.0.0.1@853
+    forward-addr: 2606:4700:4700::1111@853
+    forward-addr: 2606:4700:4700::1001@853
+    forward-tls-upstream: yes
+
+remote-control:
+  control-enable: no
+
 EOT
 
 mkdir -p /opt/unbound/etc/unbound/dev && \
