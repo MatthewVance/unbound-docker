@@ -2,16 +2,9 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.7.0`, `latest` (*1.7.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.0)
+- [`1.7.3`, `latest` (*1.7.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.3)
+- [`1.7.0`, (*1.7.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.0)
 - [`1.6.8`, (*1.6.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.8)
-- [`1.6.7`, (*1.6.7/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.7)
-- [`1.6.6`, (*1.6.6/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.6)
-- [`1.6.5`, (*1.6.5/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.5)
-- [`1.6.4`, (*1.6.4/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.4)
-- [`1.6.2`, (*1.6.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.2)
-- [`1.6.1`, (*1.6.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.1)
-- [`1.6.0`, (*1.6.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.0)
-- [`1.5.10`, (*1.5.10/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.5.10)
 
 ## What is Unbound?
 
