@@ -11,7 +11,7 @@ WORKDIR /tmp/src
 RUN set -e -x && \
     BUILD_DEPS='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $BUILD_DEPS && \
+      "$BUILD_DEPS" && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
     echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
@@ -27,7 +27,7 @@ RUN set -e -x && \
     make && \
     make install_sw && \
     apt-get purge -y --auto-remove \
-      $BUILD_DEPS && \
+      "$BUILD_DEPS" && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 FROM debian:stretch
@@ -58,7 +58,7 @@ COPY --from=openssl /opt/openssl /opt/openssl
 RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
     set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $BUILD_DEPS \
+      "$BUILD_DEPS" \
       bsdmainutils \
       ldnsutils \
       libevent-2.0 \
@@ -82,7 +82,7 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     rm -fr /opt/unbound/share/man && \
     apt-get purge -y --auto-remove \
-      $BUILD_DEPS && \
+      "$BUILD_DEPS" && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 COPY a-records.conf /opt/unbound/etc/unbound/
@@ -92,6 +92,6 @@ RUN chmod +x /unbound.sh
 
 WORKDIR /opt/unbound/
 
-ENV PATH /opt/unbound/sbin:$PATH
+ENV PATH /opt/unbound/sbin:"$PATH"
 
 CMD ["/unbound.sh"]
