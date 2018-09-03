@@ -15,7 +15,8 @@ RUN set -e -x && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
     echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
-    export GNUPGHOME="$(mktemp -d)" && \
+    GNUPGHOME="$(mktemp -d)" && \
+    export GNUPGHOME && \
     ( gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$GPG_OPENSSL" \
     || gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_OPENSSL" ) && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
