@@ -9,7 +9,7 @@ ENV GPG_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 WORKDIR /tmp/src
 
 RUN set -e -x && \
-    build_deps='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
+    build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       "$build_deps" && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
@@ -56,7 +56,7 @@ WORKDIR /tmp/src
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
-RUN build_deps='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
+RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make" && \
     set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       "$build_deps" \
