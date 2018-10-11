@@ -47,6 +47,7 @@ server:
   prefetch: yes
   prefetch-key: yes
   qname-minimisation: yes
+  aggressive-nsec: yes
   ratelimit: 1000
   rrset-roundrobin: yes
   minimal-responses: yes
