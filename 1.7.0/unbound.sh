@@ -16,11 +16,13 @@ else
     threads=1
 fi
 
-sed \
-    -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
-    -e "s/@RR_CACHE_SIZE@/${rr_cache_size}/" \
-    -e "s/@THREADS@/${threads}/" \
-    > /opt/unbound/etc/unbound/unbound.conf << EOT
+# Allow the user to provide its own unbound.conf file via mounting
+if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
+    sed \
+        -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
+        -e "s/@RR_CACHE_SIZE@/${rr_cache_size}/" \
+        -e "s/@THREADS@/${threads}/" \
+        > /opt/unbound/etc/unbound/unbound.conf << EOT
 server:
   verbosity: 1
   num-threads: @THREADS@
@@ -84,6 +86,8 @@ remote-control:
   control-enable: no
 
 EOT
+fi
+
 
 mkdir -p /opt/unbound/etc/unbound/dev && \
 cp -a /dev/random /dev/urandom /opt/unbound/etc/unbound/dev/
