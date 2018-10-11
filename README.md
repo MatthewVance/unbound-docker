@@ -106,7 +106,7 @@ though the upstream projects most certainly also deserve credit for making this
 all possible.
 - [Docker](https://www.docker.com/)
 - [DNSCrypt server Docker image](https://github.com/jedisct1/dnscrypt-server-docker)
-- [LibreSSL](http://www.libressl.org/)
+- [OpenSSL](https://www.openssl.org/)
 - [Unbound](https://unbound.nlnetlabs.nl/)
 
 ## Licenses
