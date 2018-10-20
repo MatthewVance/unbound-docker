@@ -101,6 +101,9 @@ Your volume's contents might eventually look something like this:
 
 Overall, this approach is very similar to the `a-records.conf` approach described above. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
 
+***Note:** Care has been taken in the image's default configuration to enable
+security options so it is recommended to use it as a guide.*
+
 # User feedback
 
 ## Documentation
