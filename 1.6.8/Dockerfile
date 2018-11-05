@@ -7,8 +7,8 @@ RUN set -x && \
       ldnsutils && \
       rm -rf /var/lib/apt/lists/*
 
-ENV LIBRESSL_VERSION 2.7.4
-ENV LIBRESSL_SHA256 1e3a9fada06c1c060011470ad0ff960de28f9a0515277d7336f7e09362517da6
+ENV LIBRESSL_VERSION 2.8.2
+ENV LIBRESSL_SHA256 b8cb31e59f1294557bfc80f2a662969bc064e83006ceef0574e2553a1c254fd5
 ENV LIBRESSL_DOWNLOAD_URL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.7.4.tar.gz
 
 RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
@@ -22,7 +22,7 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     echo "${LIBRESSL_SHA256} *libressl.tar.gz" | sha256sum -c - && \
     tar xzf libressl.tar.gz && \
     rm -f libressl.tar.gz && \
-    cd libressl-2.7.4 && \
+    cd libressl-2.8.2 && \
     ./configure --disable-dependency-tracking --prefix=/opt/libressl && \
     make check && make install && \
     rm -fr /opt/libressl/share/man && \
