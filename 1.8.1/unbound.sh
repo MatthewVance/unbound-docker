@@ -84,6 +84,7 @@ if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
         forward-tls-upstream: yes
     remote-control:
       control-enable: no
+# moved EOT to the left
 EOT
 fi
 
