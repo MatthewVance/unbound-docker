@@ -43,8 +43,7 @@ if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
       harden-short-bufsize: yes
       harden-large-queries: yes
       harden-glue: yes
-      harden-dnssec-stripped: yes
-      harden-below-nxdomain: yes
+      harden-dnssec-stripped: yes      harden-below-nxdomain: yes
       harden-referral-path: no
       do-not-query-localhost: no
       prefetch: yes
@@ -85,7 +84,7 @@ if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
         forward-tls-upstream: yes
     remote-control:
       control-enable: no
-    EOT
+EOT
 fi
 
 mkdir -p /opt/unbound/etc/unbound/dev && \
