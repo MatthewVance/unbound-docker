@@ -141,6 +141,14 @@ all possible.
 - [OpenSSL](https://www.openssl.org/)
 - [Unbound](https://unbound.nlnetlabs.nl/)
 
+
+## Build
+
+```bash
+make init
+make build
+# make push
+```
 ## Licenses
 
 ### License
