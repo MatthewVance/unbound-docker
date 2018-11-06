@@ -1,1 +1,4 @@
-generic/Dockerfile_*
+*.*/Dockerfile_*
+latest/Dockerfile_*
+
+.idea
