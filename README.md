@@ -2,9 +2,8 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.8.0`, `latest` (*1.8.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.0)
+- [`1.8.1`, `latest` (*1.8.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.1)
 - [`1.7.3`, (*1.7.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.3)
-- [`1.7.0`, (*1.7.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.0)
 - [`1.6.8`, (*1.6.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.8)
 
 ## What is Unbound?
@@ -68,6 +67,40 @@ docker run --name my-unbound -d -p 53:53/udp -v \
 $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 --restart=always mvance/unbound:latest
 ```
+### Use a customized Unbound configuration
+
+Instead of using this image's default configuration for Unbound, you may supply your own configuration. If your customized configuration is located at `/my-directory/unbound/unbound.conf`, pass `/my-directory/unbound` as a volume when creating your container:
+
+```console
+docker run --name=my-unbound \
+--volume=/my-directory/unbound:/opt/unbound/etc/unbound/ \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+--detach=true \
+mvance/unbound:latest
+```
+
+This will expose all files in `/my-directory/unbound/` to the container. As an alternate way to serve custom DNS records for any local zones, either place them directly in your `unbound.conf`, or place the local zones in a separate file and use Unbound's include directive within your `unbound.conf`:
+
+```
+include: /opt/unbound/etc/unbound/local-zone-unbound.conf
+```
+
+Your volume's contents might eventually look something like this:
+
+```
+/my-directory/unbound/
+-- unbound.conf
+-- local-zone-unbound.conf
+-- secret-zone.conf
+-- some-other.conf
+```
+
+Overall, this approach is very similar to the `a-records.conf` approach described above. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
+
+***Note:** Care has been taken in the image's default configuration to enable
+security options so it is recommended to use it as a guide.*
 
 # User feedback
 
@@ -105,7 +138,7 @@ though the upstream projects most certainly also deserve credit for making this
 all possible.
 - [Docker](https://www.docker.com/)
 - [DNSCrypt server Docker image](https://github.com/jedisct1/dnscrypt-server-docker)
-- [LibreSSL](http://www.libressl.org/)
+- [OpenSSL](https://www.openssl.org/)
 - [Unbound](https://unbound.nlnetlabs.nl/)
 
 ## Licenses
