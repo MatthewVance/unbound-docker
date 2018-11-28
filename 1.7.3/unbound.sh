@@ -75,15 +75,14 @@ server:
     access-control: 10.0.0.0/8 allow
     include: /opt/unbound/etc/unbound/a-records.conf
     forward-zone:
-    name: "."
-    forward-addr: 1.1.1.1@853
-    forward-addr: 1.0.0.1@853
-    forward-addr: 2606:4700:4700::1111@853
-    forward-addr: 2606:4700:4700::1001@853
-    forward-tls-upstream: yes
-
-remote-control:
-    control-enable: no
+        name: "."
+        forward-addr: 1.1.1.1@853
+        forward-addr: 1.0.0.1@853
+        forward-addr: 2606:4700:4700::1111@853
+        forward-addr: 2606:4700:4700::1001@853
+        forward-tls-upstream: yes
+    remote-control:
+        control-enable: no
 EOT
 fi
 
