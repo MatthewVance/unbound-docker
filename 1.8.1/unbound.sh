@@ -64,6 +64,7 @@ server:
     serve-expired: yes
     use-caps-for-id: yes
     unwanted-reply-threshold: 10000
+    val-clean-additional: yes
     private-address: 10.0.0.0/8
     private-address: 172.16.0.0/12
     private-address: 192.168.0.0/16
