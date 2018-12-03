@@ -65,6 +65,7 @@ server:
     use-caps-for-id: yes
     unwanted-reply-threshold: 10000
     val-clean-additional: yes
+    tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
     private-address: 10.0.0.0/8
     private-address: 172.16.0.0/12
     private-address: 192.168.0.0/16
@@ -79,10 +80,10 @@ server:
     include: /opt/unbound/etc/unbound/a-records.conf
     forward-zone:
         name: "."
-        forward-addr: 1.1.1.1@853
-        forward-addr: 1.0.0.1@853
-        forward-addr: 2606:4700:4700::1111@853
-        forward-addr: 2606:4700:4700::1001@853
+        forward-addr: 1.1.1.1@853#cloudflare-dns.com
+        forward-addr: 1.0.0.1@853#cloudflare-dns.com
+        forward-addr: 2606:4700:4700::1111@853#cloudflare-dns.com
+        forward-addr: 2606:4700:4700::1001@853#cloudflare-dns.com
         forward-tls-upstream: yes
     remote-control:
         control-enable: no
