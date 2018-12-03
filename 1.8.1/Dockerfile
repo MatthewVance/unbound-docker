@@ -40,9 +40,8 @@ ENV NAME=unbound \
     UNBOUND_VERSION=1.8.1 \
     UNBOUND_SHA256=c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d \
     UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.8.1.tar.gz \
-    VERSION=0
-
-ENV SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
+    VERSION=0 \
+    SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
 LABEL summary="${SUMMARY}" \

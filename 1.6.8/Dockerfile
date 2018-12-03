@@ -7,9 +7,9 @@ RUN set -x && \
       ldnsutils && \
       rm -rf /var/lib/apt/lists/*
 
-ENV LIBRESSL_VERSION 2.8.2
-ENV LIBRESSL_SHA256 b8cb31e59f1294557bfc80f2a662969bc064e83006ceef0574e2553a1c254fd5
-ENV LIBRESSL_DOWNLOAD_URL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.8.2.tar.gz
+ENV LIBRESSL_VERSION 2.8.2 \
+    LIBRESSL_SHA256 b8cb31e59f1294557bfc80f2a662969bc064e83006ceef0574e2553a1c254fd5 \
+    LIBRESSL_DOWNLOAD_URL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.8.2.tar.gz
 
 RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     set -x && \
@@ -30,9 +30,9 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     apt-get purge -y --auto-remove $BUILD_DEPS && \
     rm -fr /tmp/* /var/tmp/* \
 
-ENV UNBOUND_VERSION 1.6.8
-ENV UNBOUND_SHA256 e3b428e33f56a45417107448418865fe08d58e0e7fea199b855515f60884dd49
-ENV UNBOUND_DOWNLOAD_URL https://www.unbound.net/downloads/unbound-1.6.8.tar.gz
+ENV UNBOUND_VERSION 1.6.8 \
+    UNBOUND_SHA256 e3b428e33f56a45417107448418865fe08d58e0e7fea199b855515f60884dd49 \
+    UNBOUND_DOWNLOAD_URL https://www.unbound.net/downloads/unbound-1.6.8.tar.gz
 
 RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     set -x && \

@@ -1,10 +1,10 @@
 FROM debian:stretch as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1a
-ENV SHA256_OPENSSL=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41
-ENV SOURCE_OPENSSL=https://www.openssl.org/source/
-ENV OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
+ENV VERSION_OPENSSL=openssl-1.1.1a \
+    SHA256_OPENSSL=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41 \
+    SOURCE_OPENSSL=https://www.openssl.org/source/ \
+    OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
 WORKDIR /tmp/src
 
@@ -40,9 +40,8 @@ ENV NAME=unbound \
     UNBOUND_VERSION=1.7.3 \
     UNBOUND_SHA256=c11de115d928a6b48b2165e0214402a7a7da313cd479203a7ce7a8b62cba602d \
     UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.7.3.tar.gz \
-    VERSION=0
-
-ENV SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
+    VERSION=0 \
+    SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
 LABEL summary="${SUMMARY}" \
