@@ -32,7 +32,7 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
 
 ENV UNBOUND_VERSION=1.6.8 \
     UNBOUND_SHA256=e3b428e33f56a45417107448418865fe08d58e0e7fea199b855515f60884dd49 \
-    UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.6.8.tar.gz
+    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz
 
 RUN BUILD_DEPS='ca-certificates curl gcc libc-dev make' && \
     set -x && \
