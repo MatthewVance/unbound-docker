@@ -33,6 +33,7 @@ server:
     cache-min-ttl: 60
     cache-max-ttl: 86400
     do-daemonize: no
+    deny-any: yes
     username: "_unbound"
     log-queries: no
     hide-version: yes
