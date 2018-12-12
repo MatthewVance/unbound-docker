@@ -1,20 +1,24 @@
 #! /bin/sh
 
 reserved=12582912
-availableMemory=$((1024 * $( (fgrep MemAvailable /proc/meminfo || fgrep MemTotal /proc/meminfo) | sed 's/[^0-9]//g' ) ))
+availableMemory=$((1024 * $( (grep MemAvailable /proc/meminfo || grep MemTotal /proc/meminfo) | sed 's/[^0-9]//g' ) ))
 if [ $availableMemory -le $(($reserved * 2)) ]; then
     echo "Not enough memory" >&2
     exit 1
 fi
 availableMemory=$(($availableMemory - $reserved))
-msg_cache_size=$(($availableMemory / 3))
 rr_cache_size=$(($availableMemory / 3))
+# Use roughly twice as much rrset cache memory as msg cache memory
+msg_cache_size=$(($rr_cache_size / 2))
 nproc=$(nproc)
 if [ $nproc -gt 1 ]; then
     threads=$(($nproc - 1))
 else
     threads=1
 fi
+# Set *-slabs to a power of 2 close to the num-threads value.
+# This reduces lock contention.
+slabs=$(($threads * 2))
 
 # if the user hasn't mounted their own unbound.conf, use this default:
 if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
@@ -22,6 +26,7 @@ if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
         -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
         -e "s/@RR_CACHE_SIZE@/${rr_cache_size}/" \
         -e "s/@THREADS@/${threads}/" \
+        -e "s/@SLABS@/${slabs}/" \
         > /opt/unbound/etc/unbound/unbound.conf << EOT
 server:
     verbosity: 1
@@ -32,6 +37,10 @@ server:
     delay-close: 10000
     cache-min-ttl: 60
     cache-max-ttl: 86400
+    infra-cache-slabs: @SLABS@
+    key-cache-slabs: @SLABS@
+    msg-cache-slabs: @SLABS@
+    rrset-cache-slabs: @SLABS@
     do-daemonize: no
     deny-any: yes
     username: "_unbound"
