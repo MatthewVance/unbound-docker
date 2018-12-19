@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 reserved=12582912
 availableMemory=$((1024 * $( (grep MemAvailable /proc/meminfo || grep MemTotal /proc/meminfo) | sed 's/[^0-9]//g' ) ))
@@ -11,14 +11,22 @@ rr_cache_size=$(($availableMemory / 3))
 # Use roughly twice as much rrset cache memory as msg cache memory
 msg_cache_size=$(($rr_cache_size / 2))
 nproc=$(nproc)
-if [ $nproc -gt 1 ]; then
-    threads=$(($nproc - 1))
+export nproc
+if [ "$nproc" -gt 1 ]; then
+    threads=$((nproc - 1))
+    # Calculate base 2 log of the number of processors
+    nproc_log=$(perl -e 'printf "%5.5f\n", log($ENV{nproc})/log(2);')
+
+    # Round the logarithm to an integer
+    rounded_nproc_log="$(printf '%.*f\n' 0 "$nproc_log")"
+
+    # Set *-slabs to a power of 2 close to the num-threads value.
+    # This reduces lock contention.
+    slabs=$(( 2 ** rounded_nproc_log ))
 else
     threads=1
+    slabs=4
 fi
-# Set *-slabs to a power of 2 close to the num-threads value.
-# This reduces lock contention.
-slabs=$(($threads * 2))
 
 if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
     sed \
