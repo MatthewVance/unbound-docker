@@ -100,4 +100,6 @@ WORKDIR /opt/unbound/
 
 ENV PATH /opt/unbound/sbin:"$PATH"
 
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 cloudflare.com || exit 1
+
 CMD ["/unbound.sh"]
