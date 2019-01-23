@@ -24,6 +24,7 @@ sed \
 server:
   verbosity: 1
   num-threads: @THREADS@
+  interface: 0.0.0.0@53
   interface: ::0@53
   so-reuseport: yes
   edns-buffer-size: 1252
