@@ -74,7 +74,7 @@ server:
     private-address: fe80::/10
     private-address: ::ffff:0:0/96
     access-control: 127.0.0.1/32 allow
-    access-control: 192.168.1.1/24 allow
+    access-control: 192.168.0.0/16 allow
     access-control: 172.16.0.0/12 allow
     access-control: 10.0.0.0/8 allow
     include: /opt/unbound/etc/unbound/a-records.conf
