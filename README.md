@@ -58,7 +58,7 @@ The `a-records.conf` file should use the following format:
 ```
 # A Record
   #local-data: "somecomputer.local. A 192.168.1.1"
-  local-data: “laptop.local. A 192.168.1.2”
+  local-data: "laptop.local. A 192.168.1.2"
 
 # PTR Record
   #local-data-ptr: "192.168.1.1 somecomputer.local."
