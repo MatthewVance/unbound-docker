@@ -25,7 +25,7 @@ Unbound is a validating, recursive, and caching DNS resolver.
 Run this container with the following command:
 
 ```console
-docker run --name my-unbound -d -p 53:53/udp \
+docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp \
 --restart=always mvance/unbound:latest
 ```
 
