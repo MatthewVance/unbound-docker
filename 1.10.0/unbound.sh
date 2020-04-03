@@ -247,7 +247,7 @@ server:
     # is 10. If set to 0, or if do-tcp is "no", no  TCP  queries  from
     # clients  are  accepted. For larger installations increasing this
     # value is a good idea.
-	incoming-num-tcp: 10
+    incoming-num-tcp: 10
 
     # Number of slabs in the key cache. Slabs reduce lock contention by
     # threads. Must be set to a power of 2. Setting (close) to the number
