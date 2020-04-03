@@ -237,10 +237,17 @@ server:
     # PERFORMANCE SETTINGS
     ###########################################################################
     # https://nlnetlabs.nl/documentation/unbound/howto-optimise/
+    # # https://nlnetlabs.nl/news/2019/Feb/05/unbound-1.9.0-released/
 
     # Number of slabs in the infrastructure cache. Slabs reduce lock contention
     # by threads. Must be set to a power of 2.
     infra-cache-slabs: @SLABS@
+
+    # Number of incoming TCP buffers to allocate per thread. Default
+    # is 10. If set to 0, or if do-tcp is "no", no  TCP  queries  from
+    # clients  are  accepted. For larger installations increasing this
+    # value is a good idea.
+	incoming-num-tcp: 10
 
     # Number of slabs in the key cache. Slabs reduce lock contention by
     # threads. Must be set to a power of 2. Setting (close) to the number
