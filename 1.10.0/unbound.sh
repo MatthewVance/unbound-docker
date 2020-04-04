@@ -152,6 +152,9 @@ server:
     # running process and its children)
     chroot: "/opt/unbound/etc/unbound"
 
+    # Deny queries of type ANY with an empty response.
+    deny-any: yes
+
     # Harden against algorithm downgrade when multiple algorithms are
     # advertised in the DS record.
     harden-algo-downgrade: yes
