@@ -237,7 +237,7 @@ server:
     # PERFORMANCE SETTINGS
     ###########################################################################
     # https://nlnetlabs.nl/documentation/unbound/howto-optimise/
-    # # https://nlnetlabs.nl/news/2019/Feb/05/unbound-1.9.0-released/
+    # https://nlnetlabs.nl/news/2019/Feb/05/unbound-1.9.0-released/
 
     # Number of slabs in the infrastructure cache. Slabs reduce lock contention
     # by threads. Must be set to a power of 2.
