@@ -22,7 +22,15 @@ RUN set -e -x && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
     cd $VERSION_OPENSSL && \
-    ./config --prefix=/opt/openssl --openssldir=/opt/openssl no-weak-ssl-ciphers no-ssl3 no-shared enable-ec_nistp_64_gcc_128 -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong && \
+    ./config \
+      --prefix=/opt/openssl \
+      --openssldir=/opt/openssl \
+      no-weak-ssl-ciphers \
+      no-ssl3 \
+      no-shared \
+      enable-ec_nistp_64_gcc_128 \
+      -DOPENSSL_NO_HEARTBEATS \
+      -fstack-protector-strong && \
     make depend && \
     make && \
     make install_sw && \
