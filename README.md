@@ -73,7 +73,7 @@ Once the file has your entries in it, mount your version of the file as a volume
 when starting the container:
 
 ```console
-docker run --name my-unbound -d -p 53:53/udp -v \
+docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
 $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 --restart=always mvance/unbound:latest
 ```
