@@ -177,7 +177,7 @@ server:
     # Perform additional queries for infrastructure data to harden the referral
     # path. Validates the replies if trust anchors are configured and the zones
     # are signed. This enforces DNSSEC validation on nameserver NS sets and the
-    # nameserver addresses that are encountered on the referral path to the 
+    # nameserver addresses that are encountered on the referral path to the
     # answer. Experimental option.
     harden-referral-path: no
 
@@ -330,42 +330,9 @@ server:
     ###########################################################################
     # FORWARD ZONE
     ###########################################################################
-    forward-zone:
-        # Forward all queries (except those in cache and local zone) to
-        # upstream recursive servers
-        name: "."
-        # Queries to this forward zone use TLS
-        forward-tls-upstream: yes
 
-        # https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Test+Servers
+    include: /opt/unbound/etc/unbound/forward-records.conf
 
-        # Cloudflare
-        forward-addr: 1.1.1.1@853#cloudflare-dns.com
-        forward-addr: 1.0.0.1@853#cloudflare-dns.com
-        #forward-addr: 2606:4700:4700::1111@853#cloudflare-dns.com
-        #forward-addr: 2606:4700:4700::1001@853#cloudflare-dns.com
-
-        # CleanBrowsing
-        forward-addr: 185.228.168.9@853#security-filter-dns.cleanbrowsing.org
-        forward-addr: 185.228.169.9@853#security-filter-dns.cleanbrowsing.org
-        # forward-addr: 2a0d:2a00:1::2@853#security-filter-dns.cleanbrowsing.org
-        # forward-addr: 2a0d:2a00:2::2@853#security-filter-dns.cleanbrowsing.org
-
-        # Quad9
-        # forward-addr: 9.9.9.9@853#dns.quad9.net
-        # forward-addr: 149.112.112.112@853#dns.quad9.net
-        # forward-addr: 2620:fe::fe@853#dns.quad9.net
-        # forward-addr: 2620:fe::9@853#dns.quad9.net
-
-        # getdnsapi.net
-        # forward-addr: 185.49.141.37@853#getdnsapi.net
-        # forward-addr: 2a04:b900:0:100::37@853#getdnsapi.net
-
-        # Surfnet
-        # forward-addr: 145.100.185.15@853#dnsovertls.sinodun.com
-        # forward-addr: 145.100.185.16@853#dnsovertls1.sinodun.com
-        # forward-addr: 2001:610:1:40ba:145:100:185:15@853#dnsovertls.sinodun.com
-        # forward-addr: 2001:610:1:40ba:145:100:185:16@853#dnsovertls1.sinodun.com
 
 remote-control:
     control-enable: no
