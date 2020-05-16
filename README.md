@@ -77,6 +77,34 @@ docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
 $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 --restart=always mvance/unbound:latest
 ```
+
+### Override default forward
+
+By default, forwarders are configured to use Cloudflare and CleanBrowsing DNS. You can retrieve the configuration in the [1.10.0/forward-records.conf](1.10.0/forward-records.conf) file.
+
+You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container.
+
+Example `forward-records.conf`:
+```
+forward-zone:
+  # Forward all queries (except those in cache and local zone) to
+  # upstream recursive servers
+  name: "."
+
+  # my DNS
+  forward-addr: 192.168.0.1@53#home.local
+```
+
+Once the file has your entries in it, mount your version of the file as a volume
+when starting the container:
+
+```console
+docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
+$(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+--restart=always mvance/unbound:latest
+```
+
+
 ### Use a customized Unbound configuration
 
 Instead of using this image's default configuration for Unbound, you may supply your own configuration. If your customized configuration is located at `/my-directory/unbound/unbound.conf`, pass `/my-directory/unbound` as a volume when creating your container:
