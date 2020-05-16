@@ -1,8 +1,8 @@
 FROM debian:buster as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1f \
-    SHA256_OPENSSL=186c6bfe6ecfba7a5b48c47f8a1673d0f3b0e5ba2e25602dd23b629975da3f35 \
+ENV VERSION_OPENSSL=openssl-1.1.1g \
+    SHA256_OPENSSL=ddb04774f1e32f0c49751e21b67216ac87852ceb056b75209af2443400636d46 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
     OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
@@ -94,7 +94,7 @@ FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    VERSION=1.4 \
+    VERSION=1.5 \
     SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
