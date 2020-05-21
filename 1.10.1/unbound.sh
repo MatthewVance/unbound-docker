@@ -326,6 +326,7 @@ server:
 
     # Include file for local-data and local-data-ptr
     include: /opt/unbound/etc/unbound/a-records.conf
+    include: /opt/unbound/etc/unbound/srv-records.conf
 
     ###########################################################################
     # FORWARD ZONE
