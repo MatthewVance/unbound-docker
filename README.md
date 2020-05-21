@@ -55,8 +55,11 @@ custom entries on a small, private LAN. In other words, you can use Unbound to
 resolve fake names such as your-computer.local within your LAN.
 
 To support such custom entries using this image, you need to provide an
-`a-records.conf` file. This conf file is where you will define your custom
+`a-records.conf` or `srv-records.conf` file.
+This conf file is where you will define your custom
 entries for forward and reverse resolution.
+
+#### A records
 
 The `a-records.conf` file should use the following format:
 
@@ -74,8 +77,29 @@ Once the file has your entries in it, mount your version of the file as a volume
 when starting the container:
 
 ```console
-docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
-$(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
+docker run --name my-unbound -d \
+-p 53:53/udp -p 53:53/tcp \
+-v $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
+--restart=always mvance/unbound:latest
+```
+
+#### SRV records
+
+The `srv-records.conf` file should use the following format:
+
+```
+# SRV records
+# _service._proto.name. | TTL | class | SRV | priority | weight | port | target.
+_etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-0.domain.local.
+_etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-1.domain.local.
+_etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-2.domain.local.
+```
+
+Run a container taht use this SRV config file:
+```console
+docker run --name my-unbound -d \
+-p 53:53/udp -p 53:53/tcp \
+-v $(pwd)/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro \
 --restart=always mvance/unbound:latest
 ```
 
