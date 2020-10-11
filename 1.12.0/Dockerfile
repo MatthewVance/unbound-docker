@@ -95,7 +95,7 @@ FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    VERSION=1.1 \
+    VERSION=1.2 \
     SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
@@ -115,7 +115,8 @@ RUN set -x && \
       bsdmainutils \
       ca-certificates \
       ldnsutils \
-      libevent-2.1-6\
+      libevent-2.1-6 \
+      libnghttp2-dev \
       libexpat1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
