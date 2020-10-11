@@ -57,14 +57,16 @@ server:
     # Set the working directory for the program.
     directory: "/opt/unbound/etc/unbound"
 
-    # RFC 6891. Number of bytes size to advertise as the EDNS reassembly buffer
-    # size. This is the value put into datagrams over UDP towards peers.
-    # 4096 is RFC recommended. 1472 has a reasonable chance to fit within a
-    # single Ethernet frame, thus lessing the chance of fragmentation
-    # reassembly problems (usually seen as timeouts). Setting to 512 bypasses
-    # even the most stringent path MTU problems, but is not recommended since
-    # the amount of TCP fallback generated is excessive.
-    edns-buffer-size: 1472
+    # RFC 6891. Number  of bytes size to advertise as the EDNS reassembly buffer
+    # size. This is the value put into  datagrams over UDP towards peers.
+    # The actual buffer size is determined by msg-buffer-size (both for TCP and
+    # UDP). Do not set higher than that value.
+    # Default  is  1232 which is the DNS Flag Day 2020 recommendation.
+    # Setting to 512 bypasses even the most stringent path MTU problems, but
+    # is seen as extreme, since the amount of TCP fallback generated is
+    # excessive (probably also for this resolver, consider tuning the outgoing
+    # tcp number).
+    edns-buffer-size: 1232
 
     # Listen to for queries from clients and answer from this network interface
     # and port.
