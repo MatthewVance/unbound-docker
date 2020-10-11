@@ -116,7 +116,7 @@ RUN set -x && \
       ca-certificates \
       ldnsutils \
       libevent-2.1-6 \
-      libnghttp2-dev \
+      libnghttp2-14 \
       libexpat1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
