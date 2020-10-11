@@ -53,7 +53,7 @@ WORKDIR /tmp/src
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
-RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev make" && \
+RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make" && \
     set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
@@ -76,6 +76,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev make" && \
         --with-username=_unbound \
         --with-ssl=/opt/openssl \
         --with-libevent \
+        --with-libnghttp2 \
         --enable-tfo-server \
         --enable-tfo-client \
         --enable-event-api && \
@@ -94,7 +95,7 @@ FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    VERSION=1.0 \
+    VERSION=1.1 \
     SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
