@@ -97,7 +97,7 @@ _etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-1
 _etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-2.domain.local.
 ```
 
-Run a container taht use this SRV config file:
+Run a container that use this SRV config file:
 ```console
 docker run --name my-unbound -d \
 -p 53:53/udp -p 53:53/tcp \
