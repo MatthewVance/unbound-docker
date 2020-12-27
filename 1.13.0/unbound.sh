@@ -2,6 +2,9 @@
 
 reserved=12582912
 availableMemory=$((1024 * $( (grep MemAvailable /proc/meminfo || grep MemTotal /proc/meminfo) | sed 's/[^0-9]//g' ) ))
+memoryLimit=$availableMemory
+[ -r /sys/fs/cgroup/memory/memory.limit_in_bytes ] && memoryLimit=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes | sed 's/[^0-9]//g')
+[[ ! -z $memoryLimit && $memoryLimit -gt 0 && $memoryLimit -lt $availableMemory ]] && availableMemory=$memoryLimit
 if [ $availableMemory -le $(($reserved * 2)) ]; then
     echo "Not enough memory" >&2
     exit 1
