@@ -2,7 +2,8 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.13.0`, `latest` (*1.13.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.0)
+- [`1.13.1`, `latest` (*1.13.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.1)
+- [`1.13.0`, (*1.13.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.0)
 - [`1.12.0`, (*1.12.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.12.0)
 - [`1.11.0`, (*1.11.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.11.0)
 - [`1.10.1`, (*1.10.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.10.1)
