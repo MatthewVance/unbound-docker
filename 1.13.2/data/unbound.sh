@@ -189,7 +189,7 @@ server:
     # Ignore very small EDNS buffer sizes from queries.
     harden-short-bufsize: yes
 
-    # If enabled the HTTP header User-Agent is not set. Use with  caution
+    # If enabled the HTTP header User-Agent is not set. Use with caution
     # as some webserver configurations may reject HTTP requests lacking
     # this header. If needed, it is better to explicitly set the
     # the http-user-agent.
@@ -202,8 +202,8 @@ server:
     hide-version: yes
 
     # Set the HTTP User-Agent header for outgoing HTTP requests. If
-    # set to "", the default, then the package name  and  version  are
-    #  used.
+    # set to "", the default, then the package name and version are
+    # used.
     http-user-agent: "DNS"
 
     # Report this identity rather than the hostname of the server.
