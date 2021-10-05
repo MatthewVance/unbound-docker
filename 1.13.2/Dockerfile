@@ -60,6 +60,8 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
       ca-certificates \
       ldnsutils \
       libevent-2.1-7 \
+      protobuf-c-compiler \
+      libprotobuf-c-dev \
       libexpat1 && \
     curl -sSL $UNBOUND_DOWNLOAD_URL -o unbound.tar.gz && \
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
@@ -77,6 +79,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
         --with-ssl=/opt/openssl \
         --with-libevent \
         --with-libnghttp2 \
+        --enable-dnstap \
         --enable-tfo-server \
         --enable-tfo-client \
         --enable-event-api && \
@@ -110,6 +113,7 @@ RUN set -x && \
       ldnsutils \
       libevent-2.1-7 \
       libnghttp2-14 \
+      libprotobuf-c1 \
       libexpat1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
