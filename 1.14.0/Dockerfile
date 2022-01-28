@@ -69,7 +69,6 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
-        --with-deprecate-rsa-1024 \
         --disable-dependency-tracking \
         --prefix=/opt/unbound \
         --with-pthreads \
