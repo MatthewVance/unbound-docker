@@ -171,6 +171,33 @@ Overall, this approach is very similar to the `a-records.conf` approach describe
 ***Note:** Care has been taken in the image's default configuration to enable
 security options so it is recommended to use it as a guide.*
 
+### k3s usage
+
+> The method described here is basic and I would not recommend it for larger environments atm.
+
+In order to spin the deployment up use:
+
+```
+kubectl apply -f unbound-main-conf.yml -f other-files.yml ...
+```
+
+Remember when taking it down to use the reverse order in which you spun the deployment up.
+
+Restarting:
+
+```
+kubectl rollout restart deployment dns 
+```
+
+An example deployment can be viewed [here](k8s/deployment.yml). It is not ready since you need to fill it with your
+records and the main unbound configuration file.
+
+> A fair warning: I am using not using a Service but hostPort, thus this is only a start. In theory one should not do 
+> that in a production cluster.
+
+> Additional warning: As per [this](https://kubernetes.io/docs/concepts/configuration/secret/) document the default
+> secrets configuration is unencrypted per default. You are responsible to harden this yourself and should do so!
+
 # User feedback
 
 ## Documentation
