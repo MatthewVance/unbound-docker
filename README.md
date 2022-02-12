@@ -184,6 +184,22 @@ Overall, this approach is very similar to the `a-records.conf` approach describe
 ***Note:** Care has been taken in the image's default configuration to enable
 security options so it is recommended to use it as a guide.*
 
+### Run on different port
+
+If you want to run Unbound on a different such as 5353, modify the publish flags:
+
+```console
+sudo docker run \
+--name=my-unbound \
+--publish=5353:53/tcp \
+--publish=5353:53/udp \
+--detach=true \
+--restart=unless-stopped \
+--volume=$(pwd)/my-directory/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+--volume=$(pwd)/my-directory/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
+mvance/unbound:latest
+```
+
 ### Kubernetes usage
 
 > The method described here is basic and not recommended for larger environments. While this example is provided, support for Kubernetes related issues is outside the scope of this project.
