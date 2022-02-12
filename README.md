@@ -17,8 +17,13 @@ Unbound is a validating, recursive, and caching DNS resolver.
 Run this container with the following command:
 
 ```console
-docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp \
---restart=always mvance/unbound:latest
+docker run \
+--name=my-unbound \
+--detach=true \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+mvance/unbound:latest
 ```
 
 *For a DNS server with lots of short-lived connections, you may wish to consider
@@ -38,7 +43,7 @@ should have limited impact on security.*
 
 ### Override default forward
 
-By default, forwarders are configured to use Cloudflare and CleanBrowsing DNS. You can retrieve the configuration in the [forward-records.conf](1.15.0/data/opt/unbound/etc/unbound/forward-records.conf) file.
+By default, forwarders are configured to use Cloudflare DNS. You can retrieve the configuration in the [forward-records.conf](1.15.0/data/opt/unbound/etc/unbound/forward-records.conf) file.
 
 You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container.
 
@@ -53,13 +58,32 @@ forward-zone:
   forward-addr: 192.168.0.1@53#home.local
 ```
 
+Another example `forward-records.conf`:
+```
+forward-zone:
+    # Forward all queries (except those in cache and local zone) to
+    # upstream recursive servers
+    name: "."
+    # Queries to this forward zone use TLS
+    forward-tls-upstream: yes
+
+    ## CleanBrowsing Family Filter
+    forward-addr: 185.228.168.168@853#family-filter-dns.cleanbrowsing.org
+    forward-addr: 185.228.169.168@853#family-filter-dns.cleanbrowsing.org
+```
+
 Once the file has your entries in it, mount your version of the file as a volume
 when starting the container:
 
 ```console
-docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
-$(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
---restart=always mvance/unbound:latest
+docker run \
+--name my-unbound \
+--detach=true \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+---volume $(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+mvance/unbound:latest
 ```
 
 ### Serve Custom DNS Records for Local Network
@@ -91,10 +115,14 @@ Once the file has your entries in it, mount your version of the file as a volume
 when starting the container:
 
 ```console
-docker run --name my-unbound -d \
--p 53:53/udp -p 53:53/tcp \
--v $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
---restart=always mvance/unbound:latest
+docker run \
+--name my-unbound \
+--detach=true \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+--volume $(pwd)/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
+mvance/unbound:latest
 ```
 
 #### SRV records
@@ -111,10 +139,14 @@ _etcd-server-ssl._tcp.domain.local.  86400 IN    SRV 0        10     2380 etcd-2
 
 Run a container that use this SRV config file:
 ```console
-docker run --name my-unbound -d \
--p 53:53/udp -p 53:53/tcp \
--v $(pwd)/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro \
---restart=always mvance/unbound:latest
+docker run \
+--name my-unbound \
+--detach=true \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+--volume $(pwd)/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro \
+mvance/unbound:latest
 ```
 
 ### Use a customized Unbound configuration
@@ -123,11 +155,11 @@ Instead of using this image's default configuration for Unbound, you may supply 
 
 ```console
 docker run --name=my-unbound \
---volume=/my-directory/unbound:/opt/unbound/etc/unbound/ \
+--detach=true \
 --publish=53:53/tcp \
 --publish=53:53/udp \
 --restart=unless-stopped \
---detach=true \
+--volume=/my-directory/unbound:/opt/unbound/etc/unbound/ \
 mvance/unbound:latest
 ```
 
@@ -152,9 +184,9 @@ Overall, this approach is very similar to the `a-records.conf` approach describe
 ***Note:** Care has been taken in the image's default configuration to enable
 security options so it is recommended to use it as a guide.*
 
-### k3s usage
+### Kubernetes usage
 
-> The method described here is basic and not recommended for larger environments.
+> The method described here is basic and not recommended for larger environments. While this example is provided, support for Kubernetes related issues is outside the scope of this project.
 
 To spin the deployment up use:
 
@@ -186,6 +218,14 @@ records and the main unbound configuration file.
 By default, this image includes a healthcheck that probes cloudflare at a regular interval.
 
 Add `--no-healthcheck` to your Dockerfile or configure it in a Docker Compose file as explained in the [Docker docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck).
+
+## Known issues
+
+The following message may appears in the logs about IPv6 Address Assignment:
+
+`[1644625926] libunbound[24:0] error: udp connect failed: Cannot assign requested address for 2001:xxx:xx::x port 53`
+
+While annoying, the container works despite the error. Search this issues in this repo for "udp connect" to see more discussion.
 
 # User feedback
 
