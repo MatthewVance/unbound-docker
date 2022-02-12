@@ -2,26 +2,8 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.14.0`, `latest` (*1.14.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.14.0)
-- [`1.13.2`, (*1.13.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.2)
-- [`1.13.1`, (*1.13.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.1)
-- [`1.13.0`, (*1.13.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.0)
-- [`1.12.0`, (*1.12.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.12.0)
-- [`1.11.0`, (*1.11.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.11.0)
-- [`1.10.1`, (*1.10.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.10.1)
-- [`1.10.0`, (*1.10.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.10.0)
-- [`1.9.6`, (*1.9.6/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.6)
-- [`1.9.5`, (*1.9.5/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.5)
-- [`1.9.4`, (*1.9.4/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.4)
-- [`1.9.3`, (*1.9.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.3)
-- [`1.9.2`, (*1.9.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.2)
-- [`1.9.1`, (*1.9.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.1)
-- [`1.9.0`, (*1.9.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.0)
-- [`1.8.3`, (*1.8.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.3)
-- [`1.8.2`, (*1.8.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.2)
-- [`1.8.1`, (*1.8.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.1)
-- [`1.7.3`, (*1.7.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.3)
-- [`1.6.8`, (*1.6.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.8)
+- [`1.15.0`, `latest` (*1.15.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.15.0)
+- [`1.14.0`, (*1.14.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.14.0)
 
 ## What is Unbound?
 
@@ -53,6 +35,32 @@ referenced in [Docker Issue #6401](https://github.com/docker/docker/issues/6401)
 . For the most secure deployment, unrelated services with confidential data
 should not be run on the same host or VPS. In such cases, using `--net=host`
 should have limited impact on security.*
+
+### Override default forward
+
+By default, forwarders are configured to use Cloudflare and CleanBrowsing DNS. You can retrieve the configuration in the [forward-records.conf](1.15.0/data/opt/unbound/etc/unbound/forward-records.conf) file.
+
+You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container.
+
+Example `forward-records.conf`:
+```
+forward-zone:
+  # Forward all queries (except those in cache and local zone) to
+  # upstream recursive servers
+  name: "."
+
+  # my DNS
+  forward-addr: 192.168.0.1@53#home.local
+```
+
+Once the file has your entries in it, mount your version of the file as a volume
+when starting the container:
+
+```console
+docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
+$(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+--restart=always mvance/unbound:latest
+```
 
 ### Serve Custom DNS Records for Local Network
 
@@ -109,33 +117,6 @@ docker run --name my-unbound -d \
 --restart=always mvance/unbound:latest
 ```
 
-### Override default forward
-
-By default, forwarders are configured to use Cloudflare and CleanBrowsing DNS. You can retrieve the configuration in the [1.10.0/forward-records.conf](1.10.0/forward-records.conf) file.
-
-You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container.
-
-Example `forward-records.conf`:
-```
-forward-zone:
-  # Forward all queries (except those in cache and local zone) to
-  # upstream recursive servers
-  name: "."
-
-  # my DNS
-  forward-addr: 192.168.0.1@53#home.local
-```
-
-Once the file has your entries in it, mount your version of the file as a volume
-when starting the container:
-
-```console
-docker run --name my-unbound -d -p 53:53/udp -p 53:53/tcp -v \
-$(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
---restart=always mvance/unbound:latest
-```
-
-
 ### Use a customized Unbound configuration
 
 Instead of using this image's default configuration for Unbound, you may supply your own configuration. If your customized configuration is located at `/my-directory/unbound/unbound.conf`, pass `/my-directory/unbound` as a volume when creating your container:
@@ -173,9 +154,9 @@ security options so it is recommended to use it as a guide.*
 
 ### k3s usage
 
-> The method described here is basic and I would not recommend it for larger environments atm.
+> The method described here is basic and not recommended for larger environments.
 
-In order to spin the deployment up use:
+To spin the deployment up use:
 
 ```
 kubectl apply -f unbound-main-conf.yml -f other-files.yml ...
@@ -192,11 +173,19 @@ kubectl rollout restart deployment dns
 An example deployment can be viewed [here](k8s/deployment.yml). It is not ready since you need to fill it with your
 records and the main unbound configuration file.
 
-> A fair warning: I am using not using a Service but hostPort, thus this is only a start. In theory one should not do 
+> A fair warning: The example is not using a Service but hostPort, thus this is only a start. In theory one should not do 
 > that in a production cluster.
 
 > Additional warning: As per [this](https://kubernetes.io/docs/concepts/configuration/secret/) document the default
 > secrets configuration is unencrypted per default. You are responsible to harden this yourself and should do so!
+
+# Notes
+
+## Healthcheck
+
+By default, this image includes a healthcheck that probes cloudflare at a regular interval.
+
+Add `--no-healthcheck` to your Dockerfile or configure it in a Docker Compose file as explained in the [Docker docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck).
 
 # User feedback
 
