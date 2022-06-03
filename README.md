@@ -2,8 +2,31 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`1.15.0`, `latest` (*1.15.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.15.0)
+<<<<<<< HEAD
+- [`1.16.0`, `latest` (*1.16.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.16.0)
+- [`1.15.0`, (*1.15.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.15.0)
 - [`1.14.0`, (*1.14.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.14.0)
+=======
+- [`1.13.2`, (*1.13.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.2)
+- [`1.13.1`, (*1.13.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.1)
+- [`1.13.0`, (*1.13.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.13.0)
+- [`1.12.0`, (*1.12.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.12.0)
+- [`1.11.0`, (*1.11.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.11.0)
+- [`1.10.1`, (*1.10.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.10.1)
+- [`1.10.0`, (*1.10.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.10.0)
+- [`1.9.6`, (*1.9.6/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.6)
+- [`1.9.5`, (*1.9.5/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.5)
+- [`1.9.4`, (*1.9.4/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.4)
+- [`1.9.3`, (*1.9.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.3)
+- [`1.9.2`, (*1.9.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.2)
+- [`1.9.1`, (*1.9.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.1)
+- [`1.9.0`, (*1.9.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.9.0)
+- [`1.8.3`, (*1.8.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.3)
+- [`1.8.2`, (*1.8.2/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.2)
+- [`1.8.1`, (*1.8.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.8.1)
+- [`1.7.3`, (*1.7.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.7.3)
+- [`1.6.8`, (*1.6.8/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.6.8)
+>>>>>>> ab874a89554b5912d1bf05e3ddeb71c641f6bf1b
 
 ## What is Unbound?
 
