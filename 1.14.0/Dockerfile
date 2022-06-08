@@ -1,8 +1,8 @@
 FROM debian:bullseye as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-3.0.1 \
-    SHA256_OPENSSL=c311ad853353bce796edad01a862c50a8a587f62e7e2100ef465ab53ec9b06d1 \
+ENV VERSION_OPENSSL=openssl-3.0.3 \
+    SHA256_OPENSSL=ee0078adcef1de5f003c62c80cc96527721609c6f3bb42b7795df31f8b558c0b \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
     OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
