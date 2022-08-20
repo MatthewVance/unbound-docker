@@ -67,7 +67,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
     rm -f unbound.tar.gz && \
     cd unbound-1.14.0 && \
     groupadd _unbound && \
-    useradd -g _unbound -s /etc -d /dev/null _unbound && \
+    useradd -g _unbound -s /dev/null -d /etc _unbound && \
     ./configure \
         --disable-dependency-tracking \
         --prefix=/opt/unbound \
@@ -111,7 +111,7 @@ RUN set -x && \
       libnghttp2-14 \
       libexpat1 && \
     groupadd _unbound && \
-    useradd -g _unbound -s /etc -d /dev/null _unbound && \
+    useradd -g _unbound -s /dev/null -d /etc _unbound && \
     apt-get purge -y --auto-remove \
       $build_deps && \
     rm -rf \

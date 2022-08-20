@@ -116,7 +116,7 @@ RUN set -x && \
       libexpat1 \
       libprotobuf-c1 && \
     groupadd _unbound && \
-    useradd -g _unbound -s /etc -d /dev/null _unbound && \
+    useradd -g _unbound -s /dev/null -d /etc _unbound && \
     apt-get purge -y --auto-remove \
       $build_deps && \
     rm -rf \
