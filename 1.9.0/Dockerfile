@@ -24,7 +24,7 @@ RUN set -e -x && \
     cd $VERSION_OPENSSL && \
     ./config --prefix=/opt/openssl no-weak-ssl-ciphers no-ssl3 no-shared enable-ec_nistp_64_gcc_128 -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong && \
     make depend && \
-    make && \
+    nproc | xargs -I % make -j% && \
     make install_sw && \
     apt-get purge -y --auto-remove \
       $build_deps && \

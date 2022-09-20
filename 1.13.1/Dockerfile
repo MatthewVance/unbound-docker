@@ -31,7 +31,7 @@ RUN set -e -x && \
       -DOPENSSL_NO_HEARTBEATS \
       -fstack-protector-strong && \
     make depend && \
-    make && \
+    nproc | xargs -I % make -j% && \
     make install_sw && \
     apt-get purge -y --auto-remove \
       $build_deps && \
