@@ -30,26 +30,15 @@ docker run \
 mvance/unbound:latest
 ```
 
-*For a DNS server with lots of short-lived connections, you may wish to consider
-adding `--net=host` to the run command for performance reasons. However, it is
-not required and some shared container hosting services may not allow it. You
-should also be aware `--net=host` can be a security risk in some situations. The
-[Center for Internet Security Docker 1.6
-Benchmark](https://benchmarks.cisecurity.org/tools2/docker/CIS_Docker_1.6_Benchmark_v1.0.0.pdf)
-recommends against this mode since it essentially tells Docker to not
-containerize the container's networking, thereby giving it full access to the
-host machine's network interfaces. It also mentions this option could cause the
-container to do unexpected things such as shutting down the Docker host as
-referenced in [Docker Issue #6401](https://github.com/docker/docker/issues/6401)
-. For the most secure deployment, unrelated services with confidential data
-should not be run on the same host or VPS. In such cases, using `--net=host`
-should have limited impact on security.*
+By default, this image forwards queries Cloudflare DNS server over TLS. In other words, it does not act as a recursive server. The [unbound.sh file](1.17.0/data/unbound.sh) provides the configuration unless it is overriden as described below.
+
+*Note: The example [unbound.conf](unbound.conf) file is different from the one set by [unbound.sh file](1.17.0/data/unbound.sh). The example is provided to help you re-configure this as a [recursive server](https://github.com/MatthewVance/unbound-docker#recursive-config).*
 
 ### Override default forward
 
-By default, forwarders are configured to use Cloudflare DNS. You can retrieve the configuration in the [forward-records.conf](1.15.0/data/opt/unbound/etc/unbound/forward-records.conf) file.
+By default, forwarders are configured to use Cloudflare DNS. You can retrieve the configuration in the [forward-records.conf](1.17.0/data/opt/unbound/etc/unbound/forward-records.conf) file.
 
-You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container.
+You can create your own configuration file and override the one placed in `/opt/unbound/etc/unbound/forward-records.conf` in the container. This is useful if you prefer to use something other than Cloudflare DNS but do not want to provide a custom unbound.conf file.
 
 Example `forward-records.conf`:
 ```
@@ -87,6 +76,57 @@ docker run \
 --publish=53:53/udp \
 --restart=unless-stopped \
 ---volume $(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+mvance/unbound:latest
+```
+
+### Use a customized Unbound configuration
+
+Instead of using this image's default configuration for Unbound, you may supply your own configuration. If your customized configuration is located at `/my-directory/unbound/unbound.conf`, pass `/my-directory/unbound` as a volume when creating your container:
+
+```console
+docker run --name=my-unbound \
+--detach=true \
+--publish=53:53/tcp \
+--publish=53:53/udp \
+--restart=unless-stopped \
+--volume=/my-directory/unbound:/opt/unbound/etc/unbound/ \
+mvance/unbound:latest
+```
+
+This will expose all files in `/my-directory/unbound/` to the container. As an alternate way to serve custom DNS records for any local zones, either place them directly in your `unbound.conf`, or place the local zones in a separate file and use Unbound's include directive within your `unbound.conf`:
+
+```
+include: /opt/unbound/etc/unbound/local-zone-unbound.conf
+```
+
+Your volume's contents might eventually look something like this:
+
+```
+/my-directory/unbound/
+-- unbound.conf
+-- local-zone-unbound.conf
+-- secret-zone.conf
+-- some-other.conf
+```
+
+Overall, this approach is very similar to the `a-records.conf` approach described above. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
+
+***Note:** Care has been taken in the image's default configuration to enable
+security options so it is recommended to use it as a guide.*
+
+### Run on different port
+
+If you want to run Unbound on a different such as 5353, modify the publish flags:
+
+```console
+sudo docker run \
+--name=my-unbound \
+--publish=5353:53/tcp \
+--publish=5353:53/udp \
+--detach=true \
+--restart=unless-stopped \
+--volume=$(pwd)/my-directory/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+--volume=$(pwd)/my-directory/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 mvance/unbound:latest
 ```
 
@@ -150,57 +190,6 @@ docker run \
 --publish=53:53/udp \
 --restart=unless-stopped \
 --volume $(pwd)/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro \
-mvance/unbound:latest
-```
-
-### Use a customized Unbound configuration
-
-Instead of using this image's default configuration for Unbound, you may supply your own configuration. If your customized configuration is located at `/my-directory/unbound/unbound.conf`, pass `/my-directory/unbound` as a volume when creating your container:
-
-```console
-docker run --name=my-unbound \
---detach=true \
---publish=53:53/tcp \
---publish=53:53/udp \
---restart=unless-stopped \
---volume=/my-directory/unbound:/opt/unbound/etc/unbound/ \
-mvance/unbound:latest
-```
-
-This will expose all files in `/my-directory/unbound/` to the container. As an alternate way to serve custom DNS records for any local zones, either place them directly in your `unbound.conf`, or place the local zones in a separate file and use Unbound's include directive within your `unbound.conf`:
-
-```
-include: /opt/unbound/etc/unbound/local-zone-unbound.conf
-```
-
-Your volume's contents might eventually look something like this:
-
-```
-/my-directory/unbound/
--- unbound.conf
--- local-zone-unbound.conf
--- secret-zone.conf
--- some-other.conf
-```
-
-Overall, this approach is very similar to the `a-records.conf` approach described above. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
-
-***Note:** Care has been taken in the image's default configuration to enable
-security options so it is recommended to use it as a guide.*
-
-### Run on different port
-
-If you want to run Unbound on a different such as 5353, modify the publish flags:
-
-```console
-sudo docker run \
---name=my-unbound \
---publish=5353:53/tcp \
---publish=5353:53/udp \
---detach=true \
---restart=unless-stopped \
---volume=$(pwd)/my-directory/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
---volume=$(pwd)/my-directory/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro \
 mvance/unbound:latest
 ```
 
@@ -288,6 +277,23 @@ records and the main unbound configuration file.
 ## Recursive config
 
 The default config forwards forwards DNS queries to another DNS server over TLS. If you would rather this work as a recursive DNS server, you must [use a customized Unbound configuration](https://github.com/MatthewVance/unbound-docker#use-a-customized-unbound-configuration). An [example unbound.conf](https://github.com/MatthewVance/unbound-docker/blob/master/unbound.conf) file configured as a recursive server is avaiable as a guide.
+
+## Performance
+
+*For a DNS server with lots of short-lived connections, you may wish to consider
+adding `--net=host` to the run command for performance reasons. However, it is
+not required and some shared container hosting services may not allow it. You
+should also be aware `--net=host` can be a security risk in some situations. The
+[Center for Internet Security Docker 1.6
+Benchmark](https://benchmarks.cisecurity.org/tools2/docker/CIS_Docker_1.6_Benchmark_v1.0.0.pdf)
+recommends against this mode since it essentially tells Docker to not
+containerize the container's networking, thereby giving it full access to the
+host machine's network interfaces. It also mentions this option could cause the
+container to do unexpected things such as shutting down the Docker host as
+referenced in [Docker Issue #6401](https://github.com/docker/docker/issues/6401)
+. For the most secure deployment, unrelated services with confidential data
+should not be run on the same host or VPS. In such cases, using `--net=host`
+should have limited impact on security.*
 
 ## Logging
 
