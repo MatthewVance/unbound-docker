@@ -204,6 +204,58 @@ sudo docker run \
 mvance/unbound:latest
 ```
 
+### Docker Compose
+
+The following `docker-compose.yml` file is a starting point. The provided example shows how to override default forward and serve custom DNS records for your LAN. It requires `forward-records.conf` and `a-records.conf` files be provided at the `./my_conf/`. 
+
+```
+version: '3'
+services:
+  unbound:
+    container_name: unbound
+    image: "mvance/unbound:latest"
+    expose:
+      - "53"
+    networks:
+     - dns
+    network_mode: bridge
+    ports:
+      - target: 53
+        published: 53
+        protocol: tcp
+        mode: host
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
+    volumes:
+      - type: bind
+        read_only: true
+        source: ./my_conf/forward-records.conf
+        target: /opt/unbound/etc/unbound/forward-records.conf
+      - type: bind
+        read_only: true
+        source: ./my_conf/a-records.conf
+        target: /opt/unbound/etc/unbound/a-records.conf
+    restart: unless-stopped
+
+networks:
+  dns:
+
+volumes:
+  mydata:
+```
+
+If you would rather provide a fully custom `unbound.conf` file, you will need to provide an `unbound.conf` file and mount it as a volume:
+
+```
+    volumes:
+      - type: bind
+        read_only: true
+        source: ./my_conf/unbound.conf
+        target: /opt/unbound/etc/unbound/unbound.conf
+```
+
 ### Kubernetes usage
 
 > The method described here is basic and not recommended for larger environments. While this example is provided, support for Kubernetes related issues is outside the scope of this project.
