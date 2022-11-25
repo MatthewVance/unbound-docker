@@ -235,7 +235,7 @@ records and the main unbound configuration file.
 
 ## Logging
 
-Logging is very limited in the default config created by [unbound.sh](https://github.com/MatthewVance/unbound-docker/blob/748d24231c08c5b6a6ae9d60401a8ac653959952/1.17.0/data/unbound.sh#L86). If using the default config as an example starting point, a placeholder for a logfile (`unbound.log`) has been provided with the correct file ownership at the path `/opt/unbound/etc/unbound/` in case you want to increase logging and send to a file.
+Logging is very limited in the default config created by [unbound.sh](https://github.com/MatthewVance/unbound-docker/blob/e0285a31ff4449010d5ad4bbeeda1adb7645a02c/1.17.0/data/unbound.sh#L86). If using the default config as an example starting point, a placeholder for a logfile (`unbound.log`) has been provided with the correct file ownership at the path `/opt/unbound/etc/unbound/` in case you want to increase logging and send to a file.
 
 ## Healthcheck
 
