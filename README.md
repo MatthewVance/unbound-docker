@@ -285,6 +285,10 @@ records and the main unbound configuration file.
 
 # Notes
 
+## Recursive config
+
+The default config forwards forwards DNS queries to another DNS server over TLS. If you would rather this work as a recursive DNS server, you must [use a customized Unbound configuration](https://github.com/MatthewVance/unbound-docker#use-a-customized-unbound-configuration). An [example unbound.conf](https://github.com/MatthewVance/unbound-docker/blob/master/unbound.conf) file configured as a recursive server is avaiable as a guide.
+
 ## Logging
 
 Logging is very limited in the default config created by [unbound.sh](https://github.com/MatthewVance/unbound-docker/blob/e0285a31ff4449010d5ad4bbeeda1adb7645a02c/1.17.0/data/unbound.sh#L86). If using the default config as an example starting point, a placeholder for a logfile (`unbound.log`) has been provided with the correct file ownership at the path `/opt/unbound/etc/unbound/` in case you want to increase logging and send to a file.
