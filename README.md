@@ -109,14 +109,14 @@ Your volume's contents might eventually look something like this:
 -- some-other.conf
 ```
 
-Overall, this approach is very similar to the `a-records.conf` approach described above. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
+Overall, this approach is very similar to the `a-records.conf` approach described below. However, by passing your unbound directory rather than a single file, you have more options for customizing and segmenting your Unbound configuration.
 
 ***Note:** Care has been taken in the image's default configuration to enable
 security options so it is recommended to use it as a guide.*
 
 ### Run on different port
 
-If you want to run Unbound on a different such as 5353, modify the publish flags:
+If you want to run Unbound on a different port such as 5353, modify the publish flags:
 
 ```console
 sudo docker run \
@@ -138,7 +138,7 @@ resolve fake names such as your-computer.local within your LAN.
 
 To support such custom entries using this image, you need to provide an
 `a-records.conf` or `srv-records.conf` file.
-This conf file is where you will define your custom
+This configuration file is where you will define your custom
 entries for forward and reverse resolution.
 
 #### A records
@@ -255,7 +255,7 @@ To spin the deployment up use:
 kubectl apply -f unbound-main-conf.yml -f other-files.yml ...
 ```
 
-Remember when taking it down to use the reverse order in which you spun the deployment up.
+When taking it down, remember to use the reverse order in which you spun the deployment up.
 
 Restarting:
 
@@ -266,8 +266,8 @@ kubectl rollout restart deployment dns
 An example deployment can be viewed [here](k8s/deployment.yml). It is not ready since you need to fill it with your
 records and the main unbound configuration file.
 
-> A fair warning: The example is not using a Service but hostPort, thus this is only a start. In theory one should not do 
-> that in a production cluster.
+> A fair warning: The example is not using a Service but a hostPort, thus this is only a mock-up. One should not use hostPort 
+> in a production cluster.
 
 > Additional warning: As per [this](https://kubernetes.io/docs/concepts/configuration/secret/) document the default
 > secrets configuration is unencrypted per default. You are responsible to harden this yourself and should do so!
@@ -276,14 +276,14 @@ records and the main unbound configuration file.
 
 ## Recursive config
 
-The default config forwards forwards DNS queries to another DNS server over TLS. If you would rather this work as a recursive DNS server, you must [use a customized Unbound configuration](https://github.com/MatthewVance/unbound-docker#use-a-customized-unbound-configuration). An [example unbound.conf](https://github.com/MatthewVance/unbound-docker/blob/master/unbound.conf) file configured as a recursive server is avaiable as a guide.
+The default config forwards forwards DNS queries to another DNS server over TLS. If you would rather this work as a recursive DNS server, you must [use a customized Unbound configuration](https://github.com/MatthewVance/unbound-docker#use-a-customized-unbound-configuration). An [example unbound.conf](https://github.com/MatthewVance/unbound-docker/blob/master/unbound.conf) file to configure unbound as a recursive server is available as a guide.
 
 ## Performance
 
 *For a DNS server with lots of short-lived connections, you may wish to consider
 adding `--net=host` to the run command for performance reasons. However, it is
 not required and some shared container hosting services may not allow it. You
-should also be aware `--net=host` can be a security risk in some situations. The
+should also be aware that using `--net=host` can be a security risk in some situations. The
 [Center for Internet Security Docker 1.6
 Benchmark](https://benchmarks.cisecurity.org/tools2/docker/CIS_Docker_1.6_Benchmark_v1.0.0.pdf)
 recommends against this mode since it essentially tells Docker to not
@@ -301,9 +301,9 @@ Logging is very limited in the default config created by [unbound.sh](https://gi
 
 ## Healthcheck
 
-By default, this image includes a healthcheck that probes cloudflare at a regular interval.
+By default, this image includes a healthcheck that performs a query for *cloudflare.com* on localhost at a regular interval.
 
-Add `--no-healthcheck` to your Dockerfile or configure it in a Docker Compose file as explained in the [Docker docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck).
+To disable the healthcheck, add the `--no-healthcheck` flag to your Dockerfile. If using docker-compose, you can configure the healthcheck differently as explained in the [Docker docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck).
 
 ## Known issues
 
