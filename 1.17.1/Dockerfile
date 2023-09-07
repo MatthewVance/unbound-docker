@@ -1,10 +1,19 @@
 FROM debian:bullseye as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-3.1.0 \
-    SHA256_OPENSSL=aaa925ad9828745c4cad9d9efeb273deca820f2cdcf2c3ac7d7c1212b7c497b4 \
+ENV VERSION_OPENSSL=openssl-3.1.2 \
+    SHA256_OPENSSL=a0ce69b8b97ea6a35b96875235aa453b966ba3cba8af2de23657d8b6767d6539 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
-    OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
+    # OpenSSL OMC
+    OPGP_OPENSSL_1=EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 \
+    # Richard Levitte
+    OPGP_OPENSSL_2=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C \
+    # Matt Caswell
+    OPGP_OPENSSL_3=8657ABB260F056B1E5190839D9C4D26D0E604491 \
+    # Paul Dale
+    OPGP_OPENSSL_4=B7C1C14360F353A36862E4D5231C84CDDCC69C45 \
+    # Tomas Mraz
+    OPGP_OPENSSL_5=A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
 
 WORKDIR /tmp/src
 
@@ -17,7 +26,7 @@ RUN set -e -x && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
     GNUPGHOME="$(mktemp -d)" && \
     export GNUPGHOME && \
-    gpg --no-tty --keyserver keyserver.ubuntu.com --recv-keys "$OPGP_OPENSSL" && \
+    gpg --no-tty --keyserver keyserver.ubuntu.com --recv-keys "$OPGP_OPENSSL_1" "$OPGP_OPENSSL_2" "$OPGP_OPENSSL_3" "$OPGP_OPENSSL_4" "$OPGP_OPENSSL_5" && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
     cd $VERSION_OPENSSL && \
