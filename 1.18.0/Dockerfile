@@ -1,4 +1,4 @@
-FROM debian:bullseye as openssl
+FROM debian:bookworm as openssl
 LABEL maintainer="Matthew Vance"
 
 ENV VERSION_OPENSSL=openssl-3.1.3 \
@@ -49,7 +49,7 @@ RUN set -e -x && \
         /var/tmp/* \
         /var/lib/apt/lists/*
 
-FROM debian:bullseye as unbound
+FROM debian:bookworm as unbound
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
@@ -103,7 +103,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
         /var/lib/apt/lists/*
 
 
-FROM debian:bullseye
+FROM debian:bookworm
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
