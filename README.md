@@ -1,7 +1,8 @@
 # Unbound DNS Server Docker Image
 
 ## Supported tags and respective `Dockerfile` links
-- [`1.18.0`, `latest` (*1.18.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.18.0)
+- [`1.19.0`, `latest` (*1.19.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.19.0)
+- [`1.18.0`. (*1.18.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.18.0)
 - [`1.17.1`, (*1.17.1/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.17.1)
 - [`1.17.0`, (*1.17.0/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.17.0)
 - [`1.16.3`, (*1.16.3/Dockerfile*)](https://github.com/MatthewVance/unbound-docker/tree/master/1.16.3)
@@ -197,7 +198,7 @@ mvance/unbound:latest
 
 ### Docker Compose
 
-The following `docker-compose.yml` file is a starting point. The provided example shows how to override default forward and serve custom DNS records for your LAN. It requires `forward-records.conf` and `a-records.conf` files be provided at the `./my_conf/`. 
+The following `docker-compose.yml` file is a starting point. The provided example shows how to override default forward and serve custom DNS records for your LAN. It requires `forward-records.conf` and `a-records.conf` files be provided at the `./my_conf/`.
 
 ```
 version: '3'
@@ -262,13 +263,13 @@ When taking it down, remember to use the reverse order in which you spun the dep
 Restarting:
 
 ```
-kubectl rollout restart deployment dns 
+kubectl rollout restart deployment dns
 ```
 
 An example deployment can be viewed [here](k8s/deployment.yml). It is not ready since you need to fill it with your
 records and the main unbound configuration file.
 
-> A fair warning: The example is not using a Service but a hostPort, thus this is only a mock-up. One should not use hostPort 
+> A fair warning: The example is not using a Service but a hostPort, thus this is only a mock-up. One should not use hostPort
 > in a production cluster.
 
 > Additional warning: As per [this](https://kubernetes.io/docs/concepts/configuration/secret/) document the default
