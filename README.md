@@ -208,33 +208,16 @@ services:
     expose:
       - "53"
     networks:
-     - dns
-    network_mode: bridge
+      - dns
     ports:
-      - target: 53
-        published: 53
-        protocol: tcp
-        mode: host
-      - target: 53
-        published: 53
-        protocol: udp
-        mode: host
+      - "53:53/tcp"
+      - "53:53/udp"
     volumes:
-      - type: bind
-        read_only: true
-        source: ./my_conf/forward-records.conf
-        target: /opt/unbound/etc/unbound/forward-records.conf
-      - type: bind
-        read_only: true
-        source: ./my_conf/a-records.conf
-        target: /opt/unbound/etc/unbound/a-records.conf
+      - "/data/unbound/my_conf/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf"
+      - "/data/unbound/my_conf/a-records.conf:/opt/unbound/etc/unbound/a-records.conf"
     restart: unless-stopped
-
 networks:
   dns:
-
-volumes:
-  mydata:
 ```
 
 If you would rather provide a fully custom `unbound.conf` file, you will need to provide an `unbound.conf` file and mount it as a volume:
