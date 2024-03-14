@@ -77,7 +77,7 @@ docker run \
 --publish=53:53/tcp \
 --publish=53:53/udp \
 --restart=unless-stopped \
----volume $(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
+--volume $(pwd)/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro \
 mvance/unbound:latest
 ```
 
