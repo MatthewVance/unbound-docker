@@ -1,23 +1,11 @@
 FROM debian:bookworm as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-3.3.1 \
-    SHA256_OPENSSL=777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e \
-    SOURCE_OPENSSL=https://www.openssl.org/source/ \
-    # OpenSSL OMC
-    OPGP_OPENSSL_1=EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 \
-    # Richard Levitte
-    OPGP_OPENSSL_2=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C \
-    # Matt Caswell
-    OPGP_OPENSSL_3=8657ABB260F056B1E5190839D9C4D26D0E604491 \
-    # Paul Dale
-    OPGP_OPENSSL_4=B7C1C14360F353A36862E4D5231C84CDDCC69C45 \
-    # Tomas Mraz
-    OPGP_OPENSSL_5=A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
-
 WORKDIR /tmp/src
+COPY env/openssl.env openssl.env
 
 RUN set -e -x && \
+    set -o allexport && source openssl.env && set +o allexport && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps && \
@@ -52,17 +40,14 @@ RUN set -e -x && \
 FROM debian:bookworm as unbound
 LABEL maintainer="Matthew Vance"
 
-ENV NAME=unbound \
-    UNBOUND_VERSION=1.20.0 \
-    UNBOUND_SHA256=56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf \
-    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.20.0.tar.gz
-
 WORKDIR /tmp/src
+COPY env/unbound.env unbound.env
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
 RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make" && \
     set -x && \
+    set -o allexport && source unbound.env && set +o allexport && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
       bsdmainutils \
@@ -105,10 +90,6 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
 
 FROM debian:bookworm
 LABEL maintainer="Matthew Vance"
-
-ENV NAME=unbound \
-    SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
-    DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
 WORKDIR /tmp/src
 
