@@ -54,17 +54,7 @@ jobs:
         IMAGE_TAG: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || env.VERSION }}
         VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
       with:
-        context: ./1.20.0
-        platforms: ${{ matrix.platform }}
-        build-args: |
-          OS_RELEASE=${{ matrix.release }}
-          OPENSSL_PKG=${{ matrix.openssl_pkg }}
-          OPENSSL_SHA256=${{ matrix.openssl_sha256 }}
-          OPENSSL_OPGP=${{ matrix.openssl_opgp }}
-          OPENSSL_PLATFORM_ARGS=${{ matrix.openssl_platform_args }}
-          UNBOUND_VERSION=${{ env.VERSION }}
-          UNBOUND_SHA256=${{ '777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e' }}
-          UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
-          UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
-        push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
+        context: ./docker
+        platforms: linux/amd64
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
         tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ env.IMAGE_TAG }}
