@@ -5,7 +5,7 @@ WORKDIR /tmp/src
 COPY env/openssl.env openssl.env
 
 RUN set -e -x && \
-    set -o allexport && source openssl.env && set +o allexport && \
+    set -o allexport && . ./openssl.env && set +o allexport && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps && \
@@ -47,7 +47,7 @@ COPY --from=openssl /opt/openssl /opt/openssl
 
 RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make" && \
     set -x && \
-    set -o allexport && source unbound.env && set +o allexport && \
+    set -o allexport && . ./unbound.env && set +o allexport && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
       bsdmainutils \
