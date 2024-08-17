@@ -51,7 +51,6 @@ jobs:
       uses: docker/build-push-action@v6
       env:
         DOCKER_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
-        IMAGE_TAG: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || env.VERSION }}
         VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
       with:
         context: ./docker
@@ -67,4 +66,4 @@ jobs:
           UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
           UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
         push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
-        tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ env.IMAGE_TAG }}
+        tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || env.VERSION }}
