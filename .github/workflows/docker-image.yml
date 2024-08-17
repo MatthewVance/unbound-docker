@@ -16,6 +16,9 @@ on:
       version:
         type: string
         required: true
+      sha256:
+        type: string
+        required: true
       push:
         type: boolean
         
@@ -62,7 +65,7 @@ jobs:
           OPENSSL_OPGP=${{ matrix.openssl_opgp }}
           OPENSSL_PLATFORM_ARGS=${{ matrix.openssl_platform_args }}
           UNBOUND_VERSION=${{ env.VERSION }}
-          UNBOUND_SHA256=${{ '777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e' }}
+          UNBOUND_SHA256=${{ github.event.inputs.sha256 }}
           UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
           UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
         push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
