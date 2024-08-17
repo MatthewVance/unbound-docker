@@ -11,9 +11,30 @@ on:
       - "releases/**"
   release:
     types: [ "published" ]
-
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+      push:
+        type: boolean
+        
 jobs:
   build:
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm/v7, linux/arm64]
+        release: [bullseye, bookworm]
+        include:
+          - openssl_pkg: openssl-3.3.1
+            openssl_sha256: 777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e
+            openssl_opgp: EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C 8657ABB260F056B1E5190839D9C4D26D0E604491 B7C1C14360F353A36862E4D5231C84CDDCC69C45 A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
+          - platform: linux/amd64
+            platform_args: --enable-dnstap --enable-subnet
+            platform_pkgs: libprotobuf-c-dev protobuf-c-compiler
+            openssl_platform_args: enable-ec_nistp_64_gcc_128
+          - platform: linux/arm/v7
+          - platform: linux/arm64
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -30,9 +51,20 @@ jobs:
       uses: docker/build-push-action@v6
       env:
         DOCKER_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
-        IMAGE_TAG: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
+        IMAGE_TAG: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || env.VERSION }}
+        VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
       with:
         context: ./1.20.0
-        platforms: linux/amd64
-        push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        platforms: ${{ matrix.platform }}
+        build-args: |
+          OS_RELEASE=${{ matrix.release }}
+          OPENSSL_PKG=${{ matrix.openssl_pkg }}
+          OPENSSL_SHA256=${{ matrix.openssl_sha256 }}
+          OPENSSL_OPGP=${{ matrix.openssl_opgp }}
+          OPENSSL_PLATFORM_ARGS=${{ matrix.openssl_platform_args }}
+          UNBOUND_VERSION=${{ env.VERSION }}
+          UNBOUND_SHA256=${{ '777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e' }}
+          UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
+          UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
+        push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
         tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ env.IMAGE_TAG }}
