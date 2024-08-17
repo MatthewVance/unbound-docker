@@ -1,19 +1,17 @@
-FROM debian:bookworm as openssl
+# TODO: Convert environment variables to ARG to handle version back to 1.17.1
+# TODO: Handle the case of multiple GPG keys vs 1 (handles all images back to 1.15.0)
+# TODO: Figure out how to handle package differences and key servers (handles images back to 1.9.1)
+ARG OS_RELEASE
+FROM debian:${OS_RELEASE} as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-3.3.1 \
-    SHA256_OPENSSL=777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e \
-    SOURCE_OPENSSL=https://www.openssl.org/source/ \
-    # OpenSSL OMC
-    OPGP_OPENSSL_1=EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 \
-    # Richard Levitte
-    OPGP_OPENSSL_2=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C \
-    # Matt Caswell
-    OPGP_OPENSSL_3=8657ABB260F056B1E5190839D9C4D26D0E604491 \
-    # Paul Dale
-    OPGP_OPENSSL_4=B7C1C14360F353A36862E4D5231C84CDDCC69C45 \
-    # Tomas Mraz
-    OPGP_OPENSSL_5=A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
+ARG OPENSSL_PKG \
+    OPENSSL_SHA256 \
+    OPENSSL_OPGP \
+    OPENSSL_PLATFORM_ARGS
+    
+ARG OPENSSL_PLATFORM_CONFIG=linux_x86-64
+ARG OPENSSL_SOURCE=https://www.openssl.org/source/
 
 WORKDIR /tmp/src
 
@@ -21,22 +19,22 @@ RUN set -e -x && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps && \
-    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
-    echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
-    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
+    curl -L ${OPENSSL_SOURCE}${OPENSSL_PKG}.tar.gz -o openssl.tar.gz && \
+    echo "${OPENSSL_SHA256} ./openssl.tar.gz" | sha256sum -c - && \
+    curl -L ${OPENSSL_SOURCE}${OPENSSL_PKG}.tar.gz.asc -o openssl.tar.gz.asc && \
     GNUPGHOME="$(mktemp -d)" && \
     export GNUPGHOME && \
-    gpg --no-tty --keyserver keyserver.ubuntu.com --recv-keys "$OPGP_OPENSSL_1" "$OPGP_OPENSSL_2" "$OPGP_OPENSSL_3" "$OPGP_OPENSSL_4" "$OPGP_OPENSSL_5" && \
+    gpg --no-tty --keyserver keyserver.ubuntu.com --recv-keys ${OPENSSL_OPGP} && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
-    cd $VERSION_OPENSSL && \
-    ./config \
+    cd ${OPENSSL_PKG} && \
+    ./Configure \
       --prefix=/opt/openssl \
       --openssldir=/opt/openssl \
       no-weak-ssl-ciphers \
       no-ssl3 \
       no-shared \
-      enable-ec_nistp_64_gcc_128 \
+      ${OPENSSL_PLATFORM_ARGS} \
       -DOPENSSL_NO_HEARTBEATS \
       -fstack-protector-strong && \
     make depend && \
@@ -49,13 +47,15 @@ RUN set -e -x && \
         /var/tmp/* \
         /var/lib/apt/lists/*
 
-FROM debian:bookworm as unbound
+FROM debian:${OS_RELEASE} as unbound
 LABEL maintainer="Matthew Vance"
 
-ENV NAME=unbound \
-    UNBOUND_VERSION=1.20.0 \
-    UNBOUND_SHA256=56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf \
-    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.20.0.tar.gz
+ARG UNBOUND_VERSION \
+    UNBOUND_SHA256 \
+    UNBOUND_PLATFORM_ARGS \
+    UNBOUND_PLATFORM_PKGS
+    
+ARG UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-${UNBOUND_VERSION}.tar.gz
 
 WORKDIR /tmp/src
 
@@ -70,13 +70,12 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
       ldnsutils \
       libevent-2.1-7 \
       libexpat1 \
-      libprotobuf-c-dev \
-      protobuf-c-compiler && \
-    curl -sSL $UNBOUND_DOWNLOAD_URL -o unbound.tar.gz && \
+      ${UNBOUND_PLATFORM_PKGS} && \
+    curl -sSL ${UNBOUND_DOWNLOAD_URL} -o unbound.tar.gz && \
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-1.20.0 && \
+    cd unbound-${UNBOUND_VERSION} && \
     groupadd _unbound && \
     useradd -g _unbound -s /dev/null -d /etc _unbound && \
     ./configure \
@@ -87,11 +86,10 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
         --with-ssl=/opt/openssl \
         --with-libevent \
         --with-libnghttp2 \
-        --enable-dnstap \
         --enable-tfo-server \
         --enable-tfo-client \
         --enable-event-api \
-        --enable-subnet && \
+        ${UNBOUND_PLATFORM_ARGS} && \
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     apt-get purge -y --auto-remove \
@@ -103,12 +101,8 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
         /var/lib/apt/lists/*
 
 
-FROM debian:bookworm
+FROM debian:${OS_RELEASE}
 LABEL maintainer="Matthew Vance"
-
-ENV NAME=unbound \
-    SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
-    DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
 WORKDIR /tmp/src
 
