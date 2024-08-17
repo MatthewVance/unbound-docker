@@ -48,8 +48,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Push README.md
-      uses: docker/
     - name: Build and Push the Image
       uses: docker/build-push-action@v6
       env:
