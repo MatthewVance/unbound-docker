@@ -2,7 +2,7 @@
 # TODO: Handle the case of multiple GPG keys vs 1 (handles all images back to 1.15.0)
 # TODO: Figure out how to handle package differences and key servers (handles images back to 1.9.1)
 ARG OS_RELEASE
-FROM debian:${OS_RELEASE} as openssl
+FROM debian:${OS_RELEASE} AS openssl
 LABEL maintainer="Matthew Vance"
 
 ARG OPENSSL_PKG \
@@ -47,7 +47,7 @@ RUN set -e -x && \
         /var/tmp/* \
         /var/lib/apt/lists/*
 
-FROM debian:${OS_RELEASE} as unbound
+FROM debian:${OS_RELEASE} AS unbound
 LABEL maintainer="Matthew Vance"
 
 ARG UNBOUND_VERSION \
