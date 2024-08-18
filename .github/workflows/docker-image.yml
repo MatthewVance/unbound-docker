@@ -58,7 +58,7 @@ jobs:
       run: |
         curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}.sha256 -o openssl.tar.gz.sha256
         echo "OPENSSL_SHA256=$(cat openssl.tar.gz.sha256)" >> "$GITHUB_ENV"
-        curl -L https://nlnetlabs.nl/downloads/unbound/unbound-${{ matrix.release }}.tar.gz.sha256 -o unbound.tar.gz.sha256
+        curl -L https://nlnetlabs.nl/downloads/unbound/unbound-${{ env.UNBOUND_VERSION }}.tar.gz.sha256 -o unbound.tar.gz.sha256
         echo "UNBOUND_SHA256=$(cat unbound.tar.gz.sha256)" >> "$GITHUB_ENV"
     - name: Build and Push the Image
       uses: docker/build-push-action@v6
