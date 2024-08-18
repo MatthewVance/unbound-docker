@@ -51,7 +51,7 @@ jobs:
             release: bookworm 
     runs-on: ubuntu-latest
     env:
-      MATRIX_TAG: ${{ format('{1}-{2}', matrix.release, matrix.platform) }}
+      MATRIX_TAG: ${{ format('{0}-{1}', matrix.release, matrix.platform) }}
       PUSH_IMAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
     steps:
     - uses: actions/checkout@v4
