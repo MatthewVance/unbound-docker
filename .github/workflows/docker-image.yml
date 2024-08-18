@@ -23,7 +23,6 @@ on:
 
 env:
   IMAGE_REPO: ${{ secrets.DOCKERHUB_USERNAME }}/unbound-docker
-  IMAGE_TAG: ${{ github.event_name != 'release' && github.sha || github.ref_name }}
   UNBOUND_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
 
 jobs:
@@ -41,8 +40,7 @@ jobs:
             platform_args: --enable-dnstap --enable-subnet
             platform_pkgs: libprotobuf-c-dev protobuf-c-compiler
             openssl_platform_args: enable-ec_nistp_64_gcc_128
-          - platform: linux/amd64
-            release: bookworm
+          - release: bookworm
             is_primary: true
         exclude:
           # Currently blocked by bug: 
@@ -64,7 +62,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Update Matrix Tag
+    - name: Normalize Matrix Tag
       run: |
         TAG_VAL=${{ env.MATRIX_TAG }}
         echo "MATRIX_TAG=${TAG_VAL//[^0-9A-Za-z\-\.]/-}" >> "$GITHUB_ENV"
