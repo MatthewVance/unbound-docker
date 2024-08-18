@@ -16,15 +16,14 @@ on:
       version:
         type: string
         required: true
-        description: The version of Unbound to install.
-      sha256:
-        type: string
-        required: true
-        description: The SHA256 checksum of the Unbound tarball.
+        description: The version of Unbound to install
       push:
         type: boolean
-        description: Whether or not to push the resulting images.
-        
+        description: Push the image to a repository
+
+env:
+  UNBOUND_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
+
 jobs:
   build:
     strategy:
@@ -34,7 +33,7 @@ jobs:
         release: [bullseye, bookworm]
         include:
           - openssl_pkg: openssl-3.3.1
-            openssl_sha256: 777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e
+            #openssl_sha256: 777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e
             openssl_opgp: EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C 8657ABB260F056B1E5190839D9C4D26D0E604491 B7C1C14360F353A36862E4D5231C84CDDCC69C45 A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
           - platform: linux/amd64
             platform_args: --enable-dnstap --enable-subnet
@@ -55,23 +54,28 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Download checksums
+      run: |
+        curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}.sha256 -o openssl.tar.gz.sha256
+        echo "OPENSSL_SHA256=$(cat openssl.tar.gz.sha256)" >> "$GITHUB_ENV"
+        curl -L https://nlnetlabs.nl/downloads/unbound/unbound-${{ matrix.release }}.tar.gz.sha256 -o unbound.tar.gz.sha256
+        echo "UNBOUND_SHA256=$(cat unbound.tar.gz.sha256)" >> "$GITHUB_ENV"
     - name: Build and Push the Image
       uses: docker/build-push-action@v6
       env:
         DOCKER_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
-        VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
       with:
         context: ./docker
         platforms: ${{ matrix.platform }}
         build-args: |
           OS_RELEASE=${{ matrix.release }}
           OPENSSL_PKG=${{ matrix.openssl_pkg }}
-          OPENSSL_SHA256=${{ matrix.openssl_sha256 }}
+          OPENSSL_SHA256=${{ env.OPENSSL_SHA256 }}
           OPENSSL_OPGP=${{ matrix.openssl_opgp }}
           OPENSSL_PLATFORM_ARGS=${{ matrix.openssl_platform_args }}
-          UNBOUND_VERSION=${{ env.VERSION }}
-          UNBOUND_SHA256=${{ github.event.inputs.sha256 }}
+          UNBOUND_VERSION=${{ env.UNBOUND_VERSION }}
+          UNBOUND_SHA256=${{ env.UNBOUND_SHA256 }}
           UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
           UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
         push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
-        tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || env.VERSION }}
+        tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ github.event_name != 'release' && github.sha || github.ref_name }}
