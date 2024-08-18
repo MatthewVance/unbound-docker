@@ -56,7 +56,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Download checksums
       run: |
-        curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}.sha256 -o openssl.tar.gz.sha256
+        curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}/${{ matrix.openssl_pkg }}.tar.gz.sha256 -o openssl.tar.gz.sha256
         echo "OPENSSL_SHA256=$(cat openssl.tar.gz.sha256)" >> "$GITHUB_ENV"
         curl -L https://nlnetlabs.nl/downloads/unbound/unbound-${{ env.UNBOUND_VERSION }}.tar.gz.sha256 -o unbound.tar.gz.sha256
         echo "UNBOUND_SHA256=$(cat unbound.tar.gz.sha256)" >> "$GITHUB_ENV"
