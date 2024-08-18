@@ -22,6 +22,8 @@ on:
         description: Push the image to a repository
 
 env:
+  IMAGE_REPO: ${{ secrets.DOCKERHUB_USERNAME }}/unbound-docker
+  IMAGE_TAG: ${{ github.event_name != 'release' && github.sha || github.ref_name }}
   UNBOUND_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
 
 jobs:
@@ -32,17 +34,25 @@ jobs:
         platform: [linux/amd64, linux/arm/v7, linux/arm64]
         release: [bullseye, bookworm]
         include:
-          - openssl_pkg: openssl-3.3.1
-            #openssl_sha256: 777cd596284c883375a2a7a11bf5d2786fc5413255efab20c50d6ffe6d020b7e
+          - is_primary: false
+            openssl_pkg: openssl-3.3.1
             openssl_opgp: EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C 8657ABB260F056B1E5190839D9C4D26D0E604491 B7C1C14360F353A36862E4D5231C84CDDCC69C45 A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C
           - platform: linux/amd64
             platform_args: --enable-dnstap --enable-subnet
             platform_pkgs: libprotobuf-c-dev protobuf-c-compiler
             openssl_platform_args: enable-ec_nistp_64_gcc_128
-        exclude:
-          - platform: linux/arm/v7
+          - platform: linux/amd64
             release: bookworm
+            is_primary: true
+        exclude:
+          # Currently blocked by bug: 
+          # https://askubuntu.com/questions/1339558/cant-build-dockerfile-for-arm64-due-to-libc-bin-segmentation-fault
+          - platform: linux/arm/v7
+            release: bookworm 
     runs-on: ubuntu-latest
+    env:
+      MATRIX_TAG: ${{ format('{1}-{2}', matrix.release, matrix.platform) }}
+      PUSH_IMAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up QEMU
@@ -54,7 +64,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Download checksums
+    - name: Download Checksums
       run: |
         curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}.tar.gz.sha256 -o openssl.tar.gz.sha256
         echo "OPENSSL_SHA256=$(cat openssl.tar.gz.sha256)" >> "$GITHUB_ENV"
@@ -62,8 +72,6 @@ jobs:
         echo "UNBOUND_SHA256=$(cat unbound.tar.gz.sha256)" >> "$GITHUB_ENV"
     - name: Build and Push the Image
       uses: docker/build-push-action@v6
-      env:
-        DOCKER_NAMESPACE: ${{ secrets.DOCKERHUB_USERNAME }}
       with:
         context: ./docker
         platforms: ${{ matrix.platform }}
@@ -77,5 +85,40 @@ jobs:
           UNBOUND_SHA256=${{ env.UNBOUND_SHA256 }}
           UNBOUND_PLATFORM_ARGS=${{ matrix.platform_args }}
           UNBOUND_PLATFORM_PKGS=${{ matrix.platform_pkgs }}
-        push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push || startsWith(github.ref, 'refs/tags/') }}
-        tags: ${{ env.DOCKER_NAMESPACE }}/unbound-docker:${{ github.event_name != 'release' && github.sha || github.ref_name }}-${{ matrix.release }}
+        push: ${{ env.PUSH_IMAGE }}
+        tags: |
+          ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }}
+    - name: Parse Version
+      id: version
+      if: ${{ env.PUSH_IMAGE }}
+      run: |
+        regex='([0-9]+)(\.([0-9]+))?(\.([0-9]+))?(-([0-9A-Za-z\-\.]+))?'
+        if [[ "${{ env.UNBOUND_VERSION }}" =~ $regex ]]; then
+          echo "major=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+          echo "minor=${BASH_REMATCH[3]}" >> "$GITHUB_OUTPUT"
+          echo "patch=${BASH_REMATCH[5]}" >> "$GITHUB_OUTPUT"
+          echo "prerelease=${BASH_REMATCH[7]}" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Add to Manifest
+      if: ${{ env.PUSH_IMAGE }}
+      env:
+        TAG_ARGS: >-
+          --tag ${{ format('{0}:{1}.{2}-{3}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, matrix.release) }}
+          --tag ${{ format('{0}:{1}.{2}.{3}-{4}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, matrix.release) }}
+      run: |
+        docker buildx imagetools create --append ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }} || \
+        docker buildx imagetools create ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }}
+    - name: Add Primary to Manifest
+      if: ${{ env.PUSH_IMAGE && matrix.is_primary }}
+      env:
+        TAG_ARGS: >-
+          --tag ${{ format('{0}:{1}.{2}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor) }}
+          --tag ${{ format('{0}:{1}.{2}.{3}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor) }}
+      run: |
+        docker buildx imagetools create --append ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }} || \
+        docker buildx imagetools create ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }}
+    - name: Cleanup Tags
+      if: ${{ env.PUSH_IMAGE }}
+      run: |
+        token=$(curl -X POST -d "{ \"username\": \"${{ secrets.DOCKERHUB_USERNAME }}\", \"password\": \"${{ secrets.DOCKERHUB_TOKEN }}\" }" https://hub.docker.com/v2/users/login | jq -r '.token')
+        curl -X DELETE -H "Authorization: Bearer $token" https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/unbound-docker/tags/${{ env.MATRIX_TAG }}
