@@ -16,11 +16,14 @@ on:
       version:
         type: string
         required: true
+        description: The version of Unbound to install.
       sha256:
         type: string
         required: true
+        description: The SHA256 checksum of the Unbound tarball.
       push:
         type: boolean
+        description: Whether or not to push the resulting images.
         
 jobs:
   build:
@@ -37,8 +40,9 @@ jobs:
             platform_args: --enable-dnstap --enable-subnet
             platform_pkgs: libprotobuf-c-dev protobuf-c-compiler
             openssl_platform_args: enable-ec_nistp_64_gcc_128
+        exclude:
           - platform: linux/arm/v7
-          - platform: linux/arm64
+            release: bookworm
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
