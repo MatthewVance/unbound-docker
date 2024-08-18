@@ -64,6 +64,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Update Matrix Tag
+      run: |
+        TAG_VAL=${{ env.MATRIX_TAG }}
+        echo "MATRIX_TAG=${TAG_VAL//[^0-9A-Za-z\-\.]/-}" >> "$GITHUB_ENV"
     - name: Download Checksums
       run: |
         curl -L https://www.openssl.org/source/${{ matrix.openssl_pkg }}.tar.gz.sha256 -o openssl.tar.gz.sha256
@@ -104,7 +108,7 @@ jobs:
       env:
         TAG_ARGS: >-
           --tag ${{ format('{0}:{1}.{2}-{3}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, matrix.release) }}
-          --tag ${{ format('{0}:{1}.{2}.{3}-{4}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, matrix.release) }}
+          --tag ${{ format('{0}:{1}.{2}.{3}-{4}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, steps.version.outputs.patch, matrix.release) }}
       run: |
         docker buildx imagetools create --append ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }} || \
         docker buildx imagetools create ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }}
@@ -113,7 +117,7 @@ jobs:
       env:
         TAG_ARGS: >-
           --tag ${{ format('{0}:{1}.{2}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor) }}
-          --tag ${{ format('{0}:{1}.{2}.{3}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor) }}
+          --tag ${{ format('{0}:{1}.{2}.{3}', env.IMAGE_REPO, steps.version.outputs.major, steps.version.outputs.minor, steps.version.outputs.patch) }}
       run: |
         docker buildx imagetools create --append ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }} || \
         docker buildx imagetools create ${{ format('{0}:{1}', env.IMAGE_REPO, env.MATRIX_TAG) }} ${{ env.TAG_ARGS }}
