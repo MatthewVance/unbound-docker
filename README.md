@@ -295,6 +295,31 @@ By default, this image includes a healthcheck that performs a query for *cloudfl
 
 To disable the healthcheck, add the `--no-healthcheck` flag to your Dockerfile. If using docker-compose, you can configure the healthcheck differently as explained in the [Docker docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck).
 
+
+### Redis Persistent storage
+By default, Unbound runs without any kind of persistence: cache is dropped when restarting the container.
+Optionally, since 1.20.0 it is possible to enable Redis as the storage backend.
+
+Note, that Unbound never removes data stored in the Redis server, 
+so cache-size and eviction policy should be set on the Redis side.
+
+Enabling Redis as a backend requires two changes to the `unbound.conf`:
+
+#### 1. Enable cachedb module:
+In the `seerver` section add the following line:
+```
+module-config: "validator cachedb iterator"
+```
+
+#### 2. Configure Redis Connection
+Add the following section, filling in the redis address. Note, that this should not be nested in the `server` section, but rather on its own:
+```
+cachedb:
+    backend: "redis"
+    redis-server-host: 127.0.0.1
+    redis-server-port: 6379
+```
+
 ## Known issues
 
 The following message may appears in the logs about IPv6 Address Assignment:
