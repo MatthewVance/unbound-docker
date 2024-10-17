@@ -42,6 +42,14 @@ server:
     ###########################################################################
     # BASIC SETTINGS
     ###########################################################################
+    # Modules used by unbound. Default is "validator iterator"
+    # Uncomment to enable Redis support (configured at the bottom  of the file)
+    # modules:
+    #  validator - validates the security fingerprints on data sets
+    #  cachedb - persistent store for data from previous queries
+    #  iterator - sends queries to the hierarchical DNS servers that own the data
+    # module-config: "validator cachedb iterator"
+    
     # Time to live maximum for RRsets and messages in the cache. If the maximum
     # kicks in, responses to clients still get decrementing TTLs based on the
     # original (larger) values. When the internal TTL expires, the cache item
@@ -388,6 +396,31 @@ server:
 
 remote-control:
     control-enable: no
+
+###########################################################################
+# REDIS
+###########################################################################
+# Requires enabling 'cachedb' module in the server's 'module-config' section.
+# When enabled, Redis works  as  a second level cache.
+# This module interacts with the serve-expired-* options and  will  reply
+# with expired data if Unbound is configured for that.
+#
+# Unbound never removes data stored in the Redis  server, so cache-size and
+# eviction policy should be set on the Redis side.
+#
+# cachedb:
+    ###########################################################################
+    # CONNECTION SETTINGS
+    ###########################################################################
+    # Replace the default "testframe" db with Redis
+    # backend: "redis"
+
+    # ip address or domain  name  of  the  Redis server.
+    # defaults to 127.0.0.1
+    # redis-server-host: 127.0.0.1
+
+    # The TCP port number of the Redis server. Defaultsto 6379.
+    # redis-server-port: 6379
 EOT
 fi
 
